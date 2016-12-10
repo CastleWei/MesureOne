@@ -1,0 +1,21 @@
+<RCC>
+  <qresource prefix="MeasureOne">
+    <file>Resources/Question_127.84019975031px_1183370_easyicon.net.png</file>
+    <file>Resources/Settings_128.48120300752px_1183382_easyicon.net.png</file>
+    <file>Resources/Tools_129.7845373891px_1183364_easyicon.net.png</file>
+    <file>Resources/Camera_146.49499284692px_1183360_easyicon.net.png</file>
+    <file>Resources/Cinema_Camera_111.54057428215px_1183349_easyicon.net.png</file>
+    <file>Resources/Link_154.17744360902px_1183375_easyicon.net.png</file>
+    <file>Resources/Play_128px_1183387_easyicon.net.png</file>
+    <file>Resources/notification_remove_128px_15080_easyicon.net.png</file>
+    <file>Resources/player_stop_128px_33504_easyicon.net.png</file>
+    <file>Resources/down_arrow_228px_1205407_easyicon.net.png</file>
+    <file>Resources/download_158px_1205413_easyicon.net.png</file>
+    <file>Resources/left_arrow_136px_1205449_easyicon.net.png</file>
+    <file>Resources/right_arrow_140px_1205481_easyicon.net.png</file>
+    <file>Resources/up_arrow_237px_1205504_easyicon.net.png</file>
+    <file>Resources/upload_162px_1205510_easyicon.net.png</file>
+    <file>Resources/connect_128px_557755_easyicon.net.png</file>
+    <file>Resources/connect_128px_557955_easyicon.net.png</file>
+  </qresource>
+</RCC>
