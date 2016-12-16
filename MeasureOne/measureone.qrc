@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="MeasureOne">
+    <file>Resources/tick_176.95726495726px_1200700_easyicon.net.png</file>
+    <file>Resources/pause_128px_1205832_easyicon.net.png</file>
+    <file>Resources/play_128px_1205833_easyicon.net.png</file>
+    <file>Resources/edit_127.20620155039px_1200630_easyicon.net.png</file>
     <file>Resources/Question_127.84019975031px_1183370_easyicon.net.png</file>
     <file>Resources/Settings_128.48120300752px_1183382_easyicon.net.png</file>
     <file>Resources/Tools_129.7845373891px_1183364_easyicon.net.png</file>
