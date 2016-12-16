@@ -63,7 +63,7 @@ void MeasureOne::readPipelins(QComboBox *cmb)
 		cmb->addItem("<default>", CN("极大值法")); //无文件时的默认方案
 	}
 	while (!file.atEnd()) {
-		QString line(file.readLine());
+		QString line(CN(file.readLine()));
 		line = line.trimmed();
 		if (line.startsWith("<") && line.endsWith(">")){
 			//item头形如： <sample>
@@ -72,7 +72,7 @@ void MeasureOne::readPipelins(QComboBox *cmb)
 			//读取一个pipeline方案中的每一行
 			QString cmds;
 			while (1){
-				QString cmd(file.readLine());
+				QString cmd(CN(file.readLine()));
 				if (cmd.trimmed() == "</>" || file.atEnd()) break; //pipeline结尾标识
 				cmds.append(cmd);
 			}
@@ -93,8 +93,7 @@ void MeasureOne::savePipelins(QComboBox *cmb)
 	for (int i = 0; i < cmb->count(); i++){
 		QString pplname = cmb->itemText(i);
 		QString cmds = cmb->itemData(i).toString();
-		//tout << QString("<%1>").arg(pplname) << endl;
-		tout << "<" << pplname << ">" << endl;
+		tout << QString("<%1>").arg(pplname) << endl;
 		tout << cmds.trimmed() << endl;
 		tout << "</>" << endl << endl;
 	}
