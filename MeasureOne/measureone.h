@@ -2,6 +2,7 @@
 #define MEASUREONE_H
 
 #include <QtWidgets/QMainWindow>
+#include <QKeyEvent>
 #include "ui_measureone.h"
 #include "cameracontroller.h"
 #include "motioncontroller.h"
@@ -32,6 +33,8 @@ private:
 	void savePipelins(QComboBox *cmb);
 	QImage getQimg(ImageObject &imgObj);
 	virtual void timerEvent(QTimerEvent *event);
+	virtual void keyPressEvent(QKeyEvent *event);
+	virtual void keyReleaseEvent(QKeyEvent *event);
 
 private slots:
 	void showImg();
@@ -53,13 +56,12 @@ private slots:
 	void OnMotionLeft(bool checked);
 	void OnMotionRight(bool checked);
 	void OnMotionStop(bool checked);
+	void OnMotionSpeed(int speed);
 	void OnCaliA();
 	void OnCaliB();
 	void OnCaliGo();
 	void OnCaliStop();
 	void OnCaliCalc();
-	
-	//void OnProgressChanged(int value);
 };
 
 #endif // MEASUREONE_H

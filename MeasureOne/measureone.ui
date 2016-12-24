@@ -14,6 +14,12 @@
    <string>MeasureOne</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout_6">
     <property name="spacing">
      <number>4</number>
@@ -52,8 +58,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>759</width>
-         <height>687</height>
+         <width>659</width>
+         <height>715</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -191,12 +197,12 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>64</width>
+     <width>48</width>
      <height>48</height>
     </size>
    </property>
    <property name="toolButtonStyle">
-    <enum>Qt::ToolButtonTextUnderIcon</enum>
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -212,12 +218,6 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockMotion">
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
    <property name="windowTitle">
     <string>移动控制面板</string>
    </property>
@@ -277,8 +277,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>64</width>
-                <height>64</height>
+                <width>56</width>
+                <height>56</height>
                </size>
               </property>
               <property name="checkable">
@@ -297,8 +297,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>64</width>
-                <height>64</height>
+                <width>56</width>
+                <height>56</height>
                </size>
               </property>
               <property name="checkable">
@@ -317,8 +317,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>64</width>
-                <height>64</height>
+                <width>56</width>
+                <height>56</height>
                </size>
               </property>
               <property name="checkable">
@@ -337,8 +337,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>64</width>
-                <height>64</height>
+                <width>56</width>
+                <height>56</height>
                </size>
               </property>
               <property name="checkable">
@@ -357,8 +357,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>64</width>
-                <height>64</height>
+                <width>56</width>
+                <height>56</height>
                </size>
               </property>
               <property name="checkable">
@@ -376,7 +376,7 @@
             <item>
              <widget class="QToolButton" name="btnMotionUp">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -387,8 +387,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>64</width>
-                <height>64</height>
+                <width>56</width>
+                <height>56</height>
                </size>
               </property>
               <property name="checkable">
@@ -405,7 +405,7 @@
             <item>
              <widget class="QToolButton" name="btnMotionDown">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -416,8 +416,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>64</width>
-                <height>64</height>
+                <width>56</width>
+                <height>56</height>
                </size>
               </property>
               <property name="checkable">
@@ -439,6 +439,18 @@
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
            <widget class="QSlider" name="sliderSpeed">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>10</number>
+            </property>
+            <property name="tracking">
+             <bool>false</bool>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -451,6 +463,18 @@
               <pointsize>11</pointsize>
              </font>
             </property>
+            <property name="keyboardTracking">
+             <bool>false</bool>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>10</number>
+            </property>
            </widget>
           </item>
          </layout>
@@ -462,12 +486,6 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidget">
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
    <property name="windowTitle">
     <string>算法命令</string>
    </property>
@@ -673,8 +691,6 @@
       </widget>
      </item>
     </layout>
-    <zorder>frame</zorder>
-    <zorder>frame_3</zorder>
    </widget>
   </widget>
   <action name="actCapture">
@@ -686,7 +702,10 @@
      <normaloff>:/MeasureOne/Resources/Play_128px_1183387_easyicon.net.png</normaloff>:/MeasureOne/Resources/Play_128px_1183387_easyicon.net.png</iconset>
    </property>
    <property name="text">
-    <string>开始采集</string>
+    <string>图像采集</string>
+   </property>
+   <property name="toolTip">
+    <string>图像采集</string>
    </property>
   </action>
   <action name="actConnectMotion">
@@ -698,7 +717,10 @@
      <normaloff>:/MeasureOne/Resources/Link_154.17744360902px_1183375_easyicon.net.png</normaloff>:/MeasureOne/Resources/Link_154.17744360902px_1183375_easyicon.net.png</iconset>
    </property>
    <property name="text">
-    <string>开始移动</string>
+    <string>连接电机</string>
+   </property>
+   <property name="toolTip">
+    <string>连接电机</string>
    </property>
   </action>
   <action name="actRecord">

@@ -23,9 +23,10 @@ class MotionController : public QThread
 		bool isWorking = false;
 		Direction dir = Positive;
 		int pos = 0; //当前位置（按步数标记）
-		int pulseBit = 0;
-		int dirBit = 0;
-		int offBit = 0;
+		bool isOff = false; //是否脱机
+		int pulseBit = 16; //初始值16，超出范围，被自动截断，相当于没有输出
+		int dirBit = 16;
+		int offBit = 16;
 		int stepsToGo = 0; //走指定的步数，=0时一直走
 	};
 
@@ -38,7 +39,6 @@ public:
 	bool isWorking = false;
 	HANDLE hDevice = INVALID_HANDLE_VALUE;
 	AxisInfo axes[AxisAll];
-	int dt = 2000; //半脉冲间隔时间，微秒
 
 	bool connect(){ hDevice = MP441_OpenDevice(0); return isConnected(); }
 	bool isConnected(){ return hDevice != INVALID_HANDLE_VALUE; }
@@ -51,15 +51,14 @@ public:
 		}
 		return !isConnected(); //返回是否成功断开
 	}
+	bool setSpeed(int speed); //调速，1~100，以50Hz为单位，50~5kHz
 	bool go(Axis axis, Direction dir, int steps = 0);
 	bool stop(Axis axis = AxisAll);
 
 private:
-
-	//输入/输出的低/高位字节
-	uchar inLB = 0, inHB = 0, outLB = 0, outHB = 0;
+	int dt = 2000; //半脉冲间隔时间，微秒
 	void uudelay(long usec); //延迟usec个微秒
-	bool setOutBits(AxisInfo &a);
+	inline void setBit(quint16 &bits, int index, bool val);
 	virtual void run();
 };
 

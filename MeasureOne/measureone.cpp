@@ -71,11 +71,16 @@ MeasureOne::MeasureOne(QWidget *parent)
 	connect(grpSrcType, SIGNAL(triggered(QAction*)), this, SLOT(OnSrcTypeSelected(QAction*)));
 	connect(ui.btnPipeline, SIGNAL(clicked(bool)), this, SLOT(OnPplBtnClicked(bool)));
 	connect(ui.cmbPipeline, SIGNAL(currentIndexChanged(int)), this, SLOT(OnCmbIndexChanged(int)));
+
+	connect(ui.sliderSpeed, SIGNAL(valueChanged(int)), ui.spinSpeed, SLOT(setValue(int)));
+	connect(ui.spinSpeed, SIGNAL(valueChanged(int)), ui.sliderSpeed, SLOT(setValue(int)));
+	connect(ui.spinSpeed, SIGNAL(valueChanged(int)), this, SLOT(OnMotionSpeed(int)));
+	OnMotionSpeed(10); //初始速度
 }
 
 MeasureOne::~MeasureOne()
 {
-	//cam->end();
+	cam->end();
 }
 
 //读取配置文件
@@ -156,6 +161,71 @@ void MeasureOne::timerEvent(QTimerEvent *event)
 {
 	statusFrameIntvl->setText(NUM_STR(cam->dt) + "ms");
 	ui.txtPipeline->setPlainText(imgProc.toString(cam->isRunning()));
+}
+
+void MeasureOne::keyPressEvent(QKeyEvent *event)
+{
+	int key = event->key();
+	if (key == Qt::Key_W){
+		if (!ui.btnMotionForw->isChecked())
+			ui.btnMotionForw->click();
+	}
+	else if (key == Qt::Key_S){
+		if (!ui.btnMotionBack->isChecked())
+			ui.btnMotionBack->click();
+	}
+	else if (key == Qt::Key_A){
+		if (!ui.btnMotionLeft->isChecked())
+			ui.btnMotionLeft->click();
+	}
+	else if (key == Qt::Key_D){
+		if (!ui.btnMotionRight->isChecked())
+			ui.btnMotionRight->click();
+	}
+	else if (key == Qt::Key_U){
+		if (!ui.btnMotionUp->isChecked())
+			ui.btnMotionUp->click();
+	}
+	else if (key == Qt::Key_J){
+		if (!ui.btnMotionDown->isChecked())
+			ui.btnMotionDown->click();
+	}
+	else if (key == Qt::Key_Space){
+		ui.btnMotionStop->click();
+	}
+	else
+		QMainWindow::keyPressEvent(event);
+}
+
+void MeasureOne::keyReleaseEvent(QKeyEvent *event)
+{
+	int key = event->key();
+	if (key == Qt::Key_W){
+		if (ui.btnMotionForw->isChecked())
+			ui.btnMotionForw->click();
+	}
+	else if (key == Qt::Key_S){
+		if (ui.btnMotionBack->isChecked())
+			ui.btnMotionBack->click();
+	}
+	else if (key == Qt::Key_A){
+		if (ui.btnMotionLeft->isChecked())
+			ui.btnMotionLeft->click();
+	}
+	else if (key == Qt::Key_D){
+		if (ui.btnMotionRight->isChecked())
+			ui.btnMotionRight->click();
+	}
+	else if (key == Qt::Key_U){
+		if (ui.btnMotionUp->isChecked())
+			ui.btnMotionUp->click();
+	}
+	else if (key == Qt::Key_J){
+		if (ui.btnMotionDown->isChecked())
+			ui.btnMotionDown->click();
+	}
+	else
+		QMainWindow::keyReleaseEvent(event);
 }
 
 void MeasureOne::showImg()
@@ -400,6 +470,22 @@ void MeasureOne::OnMotionStop(bool checked)
 	ui.btnMotionRight->setChecked(false);
 }
 
+void MeasureOne::OnMotionSpeed(int speed)
+{
+	qDebug() << "speed:" << speed;
+	motion->setSpeed(speed);
+
+	QString tip;
+	int freq = speed * 50;
+	if (freq < 1000)
+		tip.sprintf("%dHz", freq);
+	else
+		tip.sprintf("%fkHz", freq / 1000.0f);
+
+	ui.sliderSpeed->setToolTip(tip);
+	ui.spinSpeed->setToolTip(tip);
+}
+
 void MeasureOne::OnCaliA()
 {
 	cali->onA();
@@ -427,14 +513,3 @@ void MeasureOne::OnCaliCalc()
 	float ze = ui.edtCaliZe->text().toFloat();
 	cali->onCaliCalc(realAB, z0, ze, cam->imgObj.src.cols);
 }
-
-//void MeasureOne::OnProgressChanged(int value)
-//{
-//	int max = ui.sliderProgress->maximum();
-//	float progress = (float)value / max;
-//
-//	cam->camMutex.lock();
-//	cam->jump = true;
-//	cam->newpos = progress;
-//	cam->camMutex.unlock();
-//}

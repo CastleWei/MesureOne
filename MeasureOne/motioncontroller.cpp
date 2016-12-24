@@ -23,6 +23,24 @@ MotionController::~MotionController()
 	unConnect();
 }
 
+bool MotionController::setSpeed(int speed)
+{
+	bool ok = true; //返回是否成功设置到想要的值
+	if (speed < 1){
+		speed = 1;
+		ok = false;
+	}
+	else if (speed > 100){
+		speed = 100;
+		ok = false;
+	}
+
+	//总微秒数，除以频率（以50Hz为单位）
+	this->dt  = 1000 * 1000 / (speed * 50);
+
+	return ok;
+}
+
 bool MotionController::go(Axis axis, Direction dir, int steps /*= 0*/)
 {
 	if (!isConnected()) return false;
@@ -71,39 +89,28 @@ void MotionController::uudelay(long usec)
 		QueryPerformanceCounter(&t1);
 }
 
-bool MotionController::setOutBits(AxisInfo &a)
+inline void MotionController::setBit(quint16 &bits, int index, bool val)
 {
-	//与某一位为一的数异或，该位取反；
-	//&7即取除8的余数
-	if (a.pulseBit < 8)
-		outLB ^= 1 << a.pulseBit;
+	if (val)
+		bits |= 1 << index;
 	else
-		outHB ^= 1 << (a.pulseBit & 7);
-
-	uchar &hl = (a.dirBit < 8) ? outLB : outHB;
-	int bit = a.dirBit & 7;
-	if (a.dir == Positive)
-		hl |= 1 << bit;
-	else
-		hl &= ~(1 << bit);
-
-	//if (a.offBit < 8)
-	//	outLB &= 1 << a.offBit;
-	//else
-	//	outHB &= 1 << (a.offBit & 7);
-
-	return true;
+		bits &= ~(1 << index);
 }
 
 void MotionController::run()
 {
 	qDebug() << "motion run";
 	while (isWorking){
+		//待输出的两个字节outBits，pulseMask标记脉冲位
+		quint16 outBits = 0, pulseMask = 0;
+
 		for (int i = 0; i < AxisAll; i++){
 			AxisInfo &a = axes[i];
 			if (!a.isWorking) continue;
 
-			setOutBits(a); //把输出字节该取反的取反后，才一起输出
+			setBit(pulseMask, a.pulseBit, true);
+			setBit(outBits, a.dirBit, a.dir == Positive);
+			setBit(outBits, a.offBit, a.isOff);
 
 			a.pos += (a.dir == Positive) ? 1 : -1;
 
@@ -115,10 +122,18 @@ void MotionController::run()
 					stop(a.axisId);
 			}
 		}
-		MP441_DO(hDevice, 0, outLB);
-		MP441_DO(hDevice, 1, outHB);
-		//调节脉冲间隔
-		uudelay(2);
+		//正脉冲
+		outBits |= pulseMask;
+		MP441_DO(hDevice, 0, outBits);
+		MP441_DO(hDevice, 1, outBits >> 8);
+		uudelay(dt); //调节脉冲间隔
+
+		//负脉冲
+		outBits &= ~pulseMask;
+		MP441_DO(hDevice, 0, outBits);
+		MP441_DO(hDevice, 1, outBits >> 8);
+		uudelay(dt); //调节脉冲间隔
+
 	}
 	qDebug() << "motion end";
 
