@@ -38,7 +38,7 @@ public:
 	bool isWorking = false;
 	HANDLE hDevice = INVALID_HANDLE_VALUE;
 	AxisInfo axes[AxisAll];
-	int dt = 2; //半脉冲间隔时间，微秒
+	int dt = 2000; //半脉冲间隔时间，微秒
 
 	bool connect(){ hDevice = MP441_OpenDevice(0); return isConnected(); }
 	bool isConnected(){ return hDevice != INVALID_HANDLE_VALUE; }
