@@ -1,11 +1,11 @@
 #ifndef SHOWWIDGET_H
 #define SHOWWIDGET_H
 
-#include <QWidget>
+#include <QLabel>
 #include <QTimer>
 #include <cameracontroller.h>
 
-class ShowWidget : public QWidget
+class ShowWidget : public QLabel
 {
 	Q_OBJECT
 
@@ -17,8 +17,7 @@ public:
 	void stopRefreshing();
 
 private:
-	CameraController *cam = NULL;
-	int iTmrRefresh;
+	CameraController *cam;
 
 	virtual void paintEvent(QPaintEvent * event);
 	virtual void timerEvent(QTimerEvent * event);

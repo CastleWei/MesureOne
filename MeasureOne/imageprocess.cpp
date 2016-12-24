@@ -1,5 +1,6 @@
 #include "imageprocess.h"
 #include <QDebug>
+#include <QMessageBox>
 
 ImageProcess::ImageProcess()
 {
@@ -12,18 +13,32 @@ ImageProcess::ImageProcess()
 	methods[p->key()] = p;
 	p = new MidPointMethod();
 	methods["midpoint"] = p;
-	p = new AdaptiveMethod();
-	methods[p->key()] = p;
-	p = new AdaptiveMethod();
-	methods["adaptive"] = p;
 	p = new CentroidMethod();
 	methods[p->key()] = p;
 	p = new CentroidMethod();
 	methods["centroid"] = p;
-	p = new OtsuMethod();
+	p = new GxEdgeDivideMethod();
 	methods[p->key()] = p;
-	p = new OtsuMethod();
-	methods[CN("otsu")] = p;
+	p = new OtsuThres();
+	methods[p->key()] = p;
+	p = new OtsuThres();
+	methods["otsu"] = p;
+	p = new OtsuByRowSegmn();
+	methods[p->key()] = p;
+	p = new AdaptiveSegmn();
+	methods[p->key()] = p;
+	p = new AdaptiveSegmn();
+	methods["adaptive"] = p;
+	p = new ThresholdSegmn();
+	methods[p->key()] = p;
+	p = new MixLaserResult();
+	methods[p->key()] = p;
+	p = new SrcImgResult();
+	methods[p->key()] = p;
+	p = new GrayImgResult();
+	methods[p->key()] = p;
+	p = new ZoomResult();
+	methods[p->key()] = p;
 }
 
 ImageProcess::~ImageProcess()
@@ -33,10 +48,20 @@ ImageProcess::~ImageProcess()
 	foreach(IMethod* p, methods.values()) delete p;
 }
 
-void ImageProcess::process(ImageObject &imgObj)
+int ImageProcess::process(ImageObject &imgObj)
 {
+	QMutexLocker locker(&imgObj.mutex);
+	QMutexLocker locker2(&this->mutex);
+
+	cvtColor(imgObj.src, imgObj.img, cv::COLOR_BGR2GRAY);
+
+	QElapsedTimer tmr;
+	tmr.start();
+
 	foreach(IMethod* method, pipeline)
 		method->process(imgObj);
+
+	return (int)tmr.elapsed();
 }
 
 bool ImageProcess::parse(QString code)
@@ -62,12 +87,15 @@ bool ImageProcess::parse(QString code)
 	}
 	if (i == cmdline.length()){
 		//正常读取完毕
+		QMutexLocker locker(&this->mutex);
+		foreach(IMethod* m, pipeline) delete m;
 		pipeline = tempList;
 		return true;
 	}
 	else{
 		//失败，释放new出来的对象
-		qDebug() << QString("imgproc parsing failed at:  ") + cmdline[i];//输出错误行
+		//输出错误行
+		QMessageBox::information(nullptr, CN("命令错误"), CN("该行命令无法解析：\n") + cmdline[i]);
 		foreach(IMethod* m, tempList) delete m;
 		return false;
 	}

@@ -1,12 +1,10 @@
 #include "showwidget.h"
 #include <QPainter>
-#include <QDebug>
-#include <QTimerEvent>
+#include <QLabel>
 
 ShowWidget::ShowWidget(QObject *parent)
-	: QWidget((QWidget*)parent)
+	: QLabel((QWidget*)parent)
 {
-
 }
 
 ShowWidget::~ShowWidget()
@@ -17,32 +15,27 @@ ShowWidget::~ShowWidget()
 void ShowWidget::startRefreshing(CameraController *cam)
 {
 	this->cam = cam;
-	iTmrRefresh = startTimer(100);
+	//int tmr = startTimer(40);
 }
 
 void ShowWidget::stopRefreshing()
 {
-	killTimer(iTmrRefresh);
+	//killTimer(0);
 }
 
 void ShowWidget::paintEvent(QPaintEvent * event)
 {
-	if (cam == NULL) return;
-
-	if (cam->isReady){
-		QPainter painter(this);
-		QImage img = cam->getImage();
-		//QImage mImg = cam->getIntermediateImage();
-
-		this->setMinimumSize(img.width()/* + mImg.width()*/, img.height());
-		painter.drawImage(0, 0, img);
-		//painter.drawImage(img.width(), 0, mImg);
-	}
+	QPainter painter(this);
+	//QImage img = cam->getImage();
+	//QImage mImg = cam->getIntermediateImage();
+	//if (!img.isNull() && mImg.isNull()){
+	//	this->setMinimumSize(img.width() + mImg.width(), img.height());
+	//	painter.drawImage(0, 0, img);
+	//	painter.drawImage(img.width(), 0, mImg);
+	//}
 }
 
 void ShowWidget::timerEvent(QTimerEvent * event)
 {
-	if (event->timerId() == iTmrRefresh){
-		update();
-	}
+	update();
 }

@@ -1,6 +1,8 @@
 #include "measureone.h"
 #include "common.h"
 #include <QFileDialog>
+#include <QInputDialog>
+#include <QPainter>
 #include <QTimerEvent>
 #include <QMessageBox>
 #include <QDebug>
@@ -9,7 +11,9 @@ MeasureOne::MeasureOne(QWidget *parent)
 : QMainWindow(parent)
 {
 	ui.setupUi(this);
-	cam = new CameraController(nullptr);
+	cam = new CameraController(this, imgProc);
+	motion = new MotionController(this);
+	cali = new Calibr(*motion, imgProc, cam->imgObj);
 
 	//图像来源 单选菜单组
 	grpSrcType = new QActionGroup(this);
@@ -20,7 +24,7 @@ MeasureOne::MeasureOne(QWidget *parent)
 
 	//初始化状态栏
 	statusMotion = new QLabel(this);
-	// 	statusMotion->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	//statusMotion->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	statusMotion->setMinimumWidth(150);
 	statusMotion->setIndent(4);
 	statusMotion->setText(CN("电机未连接"));
@@ -40,11 +44,32 @@ MeasureOne::MeasureOne(QWidget *parent)
 
 	//读取设置文件
 	readPipelins(ui.cmbPipeline);
+	imgProc.parse(ui.cmbPipeline->itemData(ui.cmbPipeline->currentIndex()).toString());
+	ui.txtPipeline->setPlainText(imgProc.toString(false));
 
-	connect(ui.actTest, SIGNAL(triggered()), this, SLOT(OnTest()));
+	connect(cam, SIGNAL(imageCollected()), this, SLOT(showImg()));
+	connect(cam, SIGNAL(finishCollecting()), this, SLOT(finishCollecting()));
+
+	connect(ui.btnMotionUp, SIGNAL(clicked(bool)), this, SLOT(OnMotionUp(bool)));
+	connect(ui.btnMotionDown, SIGNAL(clicked(bool)), this, SLOT(OnMotionDown(bool)));
+	connect(ui.btnMotionForw, SIGNAL(clicked(bool)), this, SLOT(OnMotionForw(bool)));
+	connect(ui.btnMotionBack, SIGNAL(clicked(bool)), this, SLOT(OnMotionBack(bool)));
+	connect(ui.btnMotionLeft, SIGNAL(clicked(bool)), this, SLOT(OnMotionLeft(bool)));
+	connect(ui.btnMotionRight, SIGNAL(clicked(bool)), this, SLOT(OnMotionRight(bool)));
+	connect(ui.btnMotionStop, SIGNAL(clicked(bool)), this, SLOT(OnMotionStop(bool)));
+	connect(ui.btnCaliA, SIGNAL(clicked()), this, SLOT(OnCaliA()));
+	connect(ui.btnCaliB, SIGNAL(clicked()), this, SLOT(OnCaliB()));
+	connect(ui.btnCaliGo, SIGNAL(clicked()), this, SLOT(OnCaliGo()));
+	connect(ui.btnCaliStop, SIGNAL(clicked()), this, SLOT(OnCaliStop()));
+	connect(ui.btnCaliCalc, SIGNAL(clicked()), this, SLOT(OnCaliCalc()));
+	connect(ui.btnPlayPause, SIGNAL(clicked(bool)), this, SLOT(OnPlayPause(bool)));
 	connect(ui.actCapture, SIGNAL(triggered(bool)), this, SLOT(OnCapture(bool)));
-	connect(ui.btnPipeline, SIGNAL(clicked(bool)), this, SLOT(OnPplBtnClicked(bool)));
+	connect(ui.actConnectMotion, SIGNAL(triggered(bool)), this, SLOT(OnMotionConnect(bool)));
+	connect(ui.actFastPlay, SIGNAL(triggered(bool)), this, SLOT(OnFastPlay(bool)));
+	connect(ui.actTest, SIGNAL(triggered()), this, SLOT(OnTest()));
+	connect(ui.actTry, SIGNAL(triggered()), this, SLOT(OnTry()));
 	connect(grpSrcType, SIGNAL(triggered(QAction*)), this, SLOT(OnSrcTypeSelected(QAction*)));
+	connect(ui.btnPipeline, SIGNAL(clicked(bool)), this, SLOT(OnPplBtnClicked(bool)));
 	connect(ui.cmbPipeline, SIGNAL(currentIndexChanged(int)), this, SLOT(OnCmbIndexChanged(int)));
 }
 
@@ -82,6 +107,7 @@ void MeasureOne::readPipelins(QComboBox *cmb)
 	}
 }
 
+//算法流水线确定保存
 void MeasureOne::savePipelins(QComboBox *cmb)
 {
 	QFile file("pipelines.txt");
@@ -99,38 +125,99 @@ void MeasureOne::savePipelins(QComboBox *cmb)
 	}
 }
 
-void MeasureOne::timerEvent(QTimerEvent * event)
+//******！！！！！必须在mutex保护下使用
+QImage MeasureOne::getQimg(ImageObject &imgObj)
 {
-	if (event->timerId() == iTmrFps){
-		int dt = (int)cam->dt;
-		ui.statusBar->showMessage(QString::number(dt)+QString("ms"));
+	QImage qimg;
+	cv::Mat mat;
+
+	if (!imgObj.dst.empty())
+		mat = imgObj.dst;
+	else if (!imgObj.img.empty())
+		mat = imgObj.img;
+	else
+		mat = imgObj.src;
+
+	int n = mat.elemSize(); //每点的字节数
+	QImage::Format format;
+	if (n == 3)
+		format = QImage::Format_RGB888;
+	else if (n == 1)
+		format = QImage::Format_Grayscale8;
+	else{
+		qDebug() << "qimage format error, elemsize=" << n;
+		return QImage();
 	}
+
+	return QImage(mat.data, mat.cols, mat.rows, mat.cols*n, format);
+}
+
+void MeasureOne::timerEvent(QTimerEvent *event)
+{
+	statusFrameIntvl->setText(NUM_STR(cam->dt) + "ms");
+	ui.txtPipeline->setPlainText(imgProc.toString(cam->isRunning()));
+}
+
+void MeasureOne::showImg()
+{
+	ImageObject &imgObj = cam->imgObj;
+
+	//statusFrameIntvl->setText(NUM_STR(cam->dt) + "ms"); //每一帧都显示效果不好
+
+	//setValue每次都会触发change信号，暂时不知道怎么调
+	//if (cam->srcType == CameraController::fromVideo) 
+	//	ui.sliderProgress->setValue(cam->curpos*ui.sliderProgress->maximum());
+
+	QMutexLocker(&imgObj.mutex);
+	//QImage qimg = getQimg(imgObj);
+	//if (qimg.width() < 1000) qimg = qimg.scaledToWidth(qimg.width() << 1);
+	ui.lblShow->setPixmap(QPixmap::fromImage(getQimg(imgObj)));
+}
+
+void MeasureOne::finishCollecting()
+{
+	ui.actCapture->setChecked(false);
+	ui.btnPlayPause->setChecked(false);
+	killTimer(tmr);
 }
 
 void MeasureOne::OnTest()
 {
-	//QString file = QFileDialog::getOpenFileName(this, "test");
-	//QImage img(file);
-	//ui.statusBar->showMessage("ready");
+	cv::Mat mat;
+	mat = cv::imread("wgs.bmp");
+	int n1 = mat.elemSize();
+	cvtColor(mat, mat, cv::COLOR_BGR2GRAY);
+	int n2 = mat.elemSize();
+	statusBar()->showMessage(QString().sprintf("bgr:%d, gray:%d", n1, n2));
+}
 
+void MeasureOne::OnTry()
+{
 }
 
 void MeasureOne::OnCapture(bool checked)
 {
-	//if (checked){
-	//	cam->start();
-	//	ui.widgShow->startRefreshing(cam);
-	//	iTmrFps = startTimer(1000); //刷新计算时间
-	//}
-	//else
-	//{
-	//	cam->end();
-	//	ui.widgShow->stopRefreshing();
-	//	killTimer(iTmrFps);
-	//}
+	if (checked){
+		ui.btnPlayPause->setChecked(true);
+		cam->start();
+		tmr = startTimer(1000);
+	}
+	else
+	{
+		cam->end();
+	}
 }
 
-//算法流水线确定保存
+void MeasureOne::OnPlayPause(bool checked)
+{
+	cam->isPlaying = checked;
+}
+
+void MeasureOne::OnFastPlay(bool checked)
+{
+	cam->willRest = !checked;
+}
+
 void MeasureOne::OnPplBtnClicked(bool checked)
 {
 	QComboBox *cmb = ui.cmbPipeline;
@@ -153,7 +240,9 @@ void MeasureOne::OnPplBtnClicked(bool checked)
 		}
 
 		ui.txtPipeline->setPlainText(cmb->itemData(index).toString());
+		ui.txtPipeline->setToolTip(cmb->itemData(index).toString());
 		ui.txtPipeline->setReadOnly(false);
+		ui.txtPipeline->setAttribute(Qt::WA_InputMethodEnabled);
 	}
 	else{
 		//解析、保存当前指令
@@ -174,7 +263,8 @@ void MeasureOne::OnPplBtnClicked(bool checked)
 			cmb->setItemData(cmb->currentIndex(), code);
 		}
 		ui.txtPipeline->setReadOnly(true);
-		ui.txtPipeline->setPlainText(imgProc.toString(true));
+		ui.txtPipeline->setPlainText(imgProc.toString(cam->isRunning()));
+		ui.txtPipeline->setToolTip(imgProc.toString(cam->isRunning()));
 		savePipelins(cmb);
 	}
 }
@@ -186,24 +276,165 @@ void MeasureOne::OnCmbIndexChanged(int index)
 
 	if (ui.btnPipeline->isChecked()){
 		ui.txtPipeline->setPlainText(itemData);
+		ui.txtPipeline->setToolTip(itemData);
 	}
 	else{
 		imgProc.parse(itemData);
-		ui.txtPipeline->setPlainText(imgProc.toString(false));
+		ui.txtPipeline->setPlainText(imgProc.toString(cam->isRunning()));
+		ui.txtPipeline->setToolTip(imgProc.toString(cam->isRunning()));
 	}
 }
 
 void MeasureOne::OnSrcTypeSelected(QAction *action)
 {
+	ui.sliderProgress->setValue(0);
 	if (action == ui.actFromPic){
-		QMessageBox::information(this, "", "from pic");
+		ui.sliderProgress->setEnabled(false);
+		cam->srcType = CameraController::fromPic;
+		QString path = QFileDialog::getOpenFileName(this, CN("打开图片"));
+		cam->path = path;
+		ui.actCapture->trigger();
 	}
 	else if (action == ui.actFromVideo){
-		QMessageBox::information(this, "", "from video");
-
+		ui.sliderProgress->setEnabled(true);
+		cam->srcType = CameraController::fromVideo;
+		QString path = QFileDialog::getOpenFileName(this, CN("打开视频"));
+		cam->path = path;
+		ui.actCapture->trigger();
 	}
 	else if (action == ui.actFromCam){
-		QMessageBox::information(this, "", "from cam");
-
+		ui.sliderProgress->setEnabled(false);
+		int n = QInputDialog::getInt(this, CN("选择相机"), CN("请输入相机编号："), 1);
+		cam->camNum = n;
+		cam->srcType = CameraController::fromCam;
 	}
 }
+
+void MeasureOne::OnMotionConnect(bool checked)
+{
+	if (checked){
+		motion->connect();
+	}
+	else{
+		motion->unConnect();
+	}
+}
+
+void MeasureOne::OnMotionUp(bool checked)
+{
+	if (checked){
+		ui.btnMotionDown->setChecked(false);
+		motion->go(Z, Negative);
+	}
+	else{
+		motion->stop(Z);
+	}
+}
+
+void MeasureOne::OnMotionDown(bool checked)
+{
+	if (checked){
+		ui.btnMotionUp->setChecked(false);
+		motion->go(Z, Positive);
+	}
+	else{
+		motion->stop(Z);
+	}
+}
+
+void MeasureOne::OnMotionForw(bool checked)
+{
+	if (checked){
+		ui.btnMotionBack->setChecked(false);
+		motion->go(Y, Positive);
+	}
+	else{
+		motion->stop(Y);
+	}
+}
+
+void MeasureOne::OnMotionBack(bool checked)
+{
+	if (checked){
+		ui.btnMotionForw->setChecked(false);
+		motion->go(Y, Negative);
+	}
+	else{
+		motion->stop(Y);
+	}
+
+}
+
+void MeasureOne::OnMotionLeft(bool checked)
+{
+	if (checked){
+		ui.btnMotionRight->setChecked(false);
+		motion->go(X, Negative);
+	}
+	else{
+		motion->stop(X);
+	}
+
+}
+
+void MeasureOne::OnMotionRight(bool checked)
+{
+	if (checked){
+		ui.btnMotionLeft->setChecked(false);
+		motion->go(X, Positive);
+	}
+	else{
+		motion->stop(X);
+	}
+
+}
+
+void MeasureOne::OnMotionStop(bool checked)
+{
+	motion->stop();
+	ui.btnMotionUp->setChecked(false);
+	ui.btnMotionDown->setChecked(false);
+	ui.btnMotionForw->setChecked(false);
+	ui.btnMotionBack->setChecked(false);
+	ui.btnMotionLeft->setChecked(false);
+	ui.btnMotionRight->setChecked(false);
+}
+
+void MeasureOne::OnCaliA()
+{
+	cali->onA();
+}
+
+void MeasureOne::OnCaliB()
+{
+	cali->onB();
+}
+
+void MeasureOne::OnCaliGo()
+{
+	cali->onCaliGo();
+}
+
+void MeasureOne::OnCaliStop()
+{
+	cali->onCaliStop();
+}
+
+void MeasureOne::OnCaliCalc()
+{
+	float realAB = ui.edtCaliLen->text().toFloat();
+	float z0 = ui.edtCaliZ0->text().toFloat();
+	float ze = ui.edtCaliZe->text().toFloat();
+	cali->onCaliCalc(realAB, z0, ze, cam->imgObj.src.cols);
+}
+
+//void MeasureOne::OnProgressChanged(int value)
+//{
+//	int max = ui.sliderProgress->maximum();
+//	float progress = (float)value / max;
+//
+//	cam->camMutex.lock();
+//	cam->jump = true;
+//	cam->newpos = progress;
+//	cam->camMutex.unlock();
+//}
