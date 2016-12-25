@@ -253,16 +253,12 @@ void MeasureOne::finishCollecting()
 
 void MeasureOne::OnTest()
 {
-	cv::Mat mat;
-	mat = cv::imread("wgs.bmp");
-	int n1 = mat.elemSize();
-	cvtColor(mat, mat, cv::COLOR_BGR2GRAY);
-	int n2 = mat.elemSize();
-	statusBar()->showMessage(QString().sprintf("bgr:%d, gray:%d", n1, n2));
+
 }
 
 void MeasureOne::OnTry()
 {
+
 }
 
 void MeasureOne::OnCapture(bool checked)
@@ -478,9 +474,11 @@ void MeasureOne::OnMotionSpeed(int speed)
 	QString tip;
 	int freq = speed * 50;
 	if (freq < 1000)
-		tip.sprintf("%dHz", freq);
+		//tip.sprintf("%dHz", freq);
+		tip = QString::number(freq) + "Hz";
 	else
-		tip.sprintf("%fkHz", freq / 1000.0f);
+		//tip.sprintf("%fkHz", freq);
+		tip = QString::number(freq / 1000.0f) + "kHz";
 
 	ui.sliderSpeed->setToolTip(tip);
 	ui.spinSpeed->setToolTip(tip);
