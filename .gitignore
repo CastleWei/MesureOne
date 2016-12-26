@@ -154,3 +154,5 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+MeasureOne/GeneratedFiles/qrc_measureone.cpp
+MeasureOne/GeneratedFiles/ui_measureone.h
