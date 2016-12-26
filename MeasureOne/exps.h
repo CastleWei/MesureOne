@@ -11,14 +11,62 @@
 
 
 
+//***<<<  4. mat.copyTo()耗时  >>>***
+
+//结果：1280*960 的图片copy一次2ms
+
+//cv::Mat mat, mat1, mat2;
+//mat = cv::imread("wgs.bmp");
+//mat1 = cv::imread("1.jpg");
+//mat2 = cv::imread("wgs.bmp");
+//
+//QElapsedTimer tmr;
+//tmr.start();
+//mat1.copyTo(mat);
+//mat2.copyTo(mat);
+//qint64 dt = tmr.elapsed();
+//
+//statusBar()->showMessage(QString::number(dt));
+
+//***<<< 以上  4. mat.copyTo()耗时  >>>***
+
+
+
+//***<<<  3. 测试QThread::usleep的准确度  >>>***
+
+//结果：usleep(1)时，min ~ average ~ max 如下
+//1.01 ms ~ 1.84 ms ~ 2.48ms
+
+//msleep()个位数时都有一毫秒左右的误差
+
+// QElapsedTimer tmr;
+// quint64 tsum = 0, tmin = 10000000, tmax = 0;
+// int n = 1000;
+// for (int i = 0; i < n; i++){
+// 	tmr.start();
+// 	QThread::usleep(1);
+// 	quint64 dt = tmr.nsecsElapsed();
+// 
+// 	if (tmin>dt) tmin = dt;
+// 	if (tmax < dt) tmax = dt;
+// 	tsum += dt;
+// }
+// QMessageBox::information(this, "",
+
+//***<<< 以上  3. 测试QThread::usleep的准确度  >>>***
+
+
+
 //***<<<  2. mat.elemSize的作用  >>>***
+
+//返回每个像素占多少字节
 
 // 	cv::Mat mat;
 // 	mat = cv::imread("wgs.bmp");
 // 	int n1 = mat.elemSize();
 // 	cvtColor(mat, mat, cv::COLOR_BGR2GRAY);
 // 	int n2 = mat.elemSize();
-// 	statusBar()->showMessage(QString().sprintf("bgr:%d, gray:%d", n1, n2));
+// 	statusBar()->showMessage(QString().sprintf("bgr:%d, gray:%d", n1, n2)); //bgr:3, gray:1
 
 //***<<< 以上  2. elemSize的作用  >>>***
 
