@@ -6,7 +6,7 @@
 #include <QString>
 
 namespace vwdb{
-	bool initdb();
+	bool initdb(void *_out);
 	bool println(QString text);
 }
 

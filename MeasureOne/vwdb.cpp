@@ -1,11 +1,29 @@
 #include "vwdb.h"
+#include <QTextEdit>
 
-bool vwdb::initdb()
+QString beforeInit;
+QTextEdit *out = nullptr;
+
+
+bool vwdb::initdb(void *_out)
 {
-	return false;
+	if (!_out) return false;
+	out = (QTextEdit*)_out;
+
+	if (!beforeInit.isEmpty())
+		out->append(beforeInit);
+
+	return true;
 }
 
 bool vwdb::println(QString text)
 {
-	return false;
+	if (!out){
+		beforeInit.append(text).append("\n");
+		return false;
+	}
+	else{
+		out->append(text);
+		return true;
+	}
 }

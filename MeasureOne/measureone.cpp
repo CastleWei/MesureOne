@@ -1,5 +1,6 @@
 #include "measureone.h"
 #include "common.h"
+#include "vwdb.h"
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QPainter>
@@ -76,6 +77,8 @@ MeasureOne::MeasureOne(QWidget *parent)
 	connect(ui.spinSpeed, SIGNAL(valueChanged(int)), ui.sliderSpeed, SLOT(setValue(int)));
 	connect(ui.spinSpeed, SIGNAL(valueChanged(int)), this, SLOT(OnMotionSpeed(int)));
 	OnMotionSpeed(10); //≥ı ºÀŸ∂»
+
+	vwdb::initdb(ui.textOutput);
 }
 
 MeasureOne::~MeasureOne()
