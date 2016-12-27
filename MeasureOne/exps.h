@@ -11,6 +11,32 @@
 
 
 
+//***<<<  5. cvtColor()耗时  >>>***
+
+//结论：1280*960 的图片，不同mat间转换2ms，同一个mat转换9ms
+
+//cv::Mat mat, mat1, mat2;
+//mat = cv::imread("wgs.bmp");
+//mat1 = cv::imread("1.jpg");
+//mat2 = cv::imread("wgs.bmp");
+//
+//QElapsedTimer tmr;
+//tmr.start();
+//cvtColor(mat1, mat, cv::COLOR_BGR2RGB);
+//cvtColor(mat2, mat, cv::COLOR_BGR2RGB);
+//cvtColor(mat1, mat, cv::COLOR_BGR2RGB);
+//cvtColor(mat2, mat, cv::COLOR_BGR2RGB);
+////cvtColor(mat, mat, cv::COLOR_RGB2BGR);
+////cvtColor(mat, mat, cv::COLOR_BGR2RGB);
+////cvtColor(mat, mat, cv::COLOR_RGB2BGR);
+//qint64 dt = tmr.elapsed();
+
+//QMessageBox::information(this, "", NUM_STR(dt) + "ms");
+
+//***<<< 以上  5. cvtColor()耗时  >>>***
+
+
+
 //***<<<  4. mat.copyTo()耗时  >>>***
 
 //结果：1280*960 的图片copy一次2ms
