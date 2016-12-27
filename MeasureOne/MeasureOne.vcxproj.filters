@@ -89,6 +89,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_calibr.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="vwdb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="measureone.h">
@@ -124,6 +127,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="exps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vwdb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

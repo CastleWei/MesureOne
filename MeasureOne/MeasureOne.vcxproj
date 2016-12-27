@@ -119,6 +119,7 @@
     <ClCompile Include="measureone.cpp" />
     <ClCompile Include="motioncontroller.cpp" />
     <ClCompile Include="showwidget.cpp" />
+    <ClCompile Include="vwdb.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="measureone.h">
@@ -145,6 +146,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="vwdb.h" />
     <CustomBuild Include="calibr.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing calibr.h...</Message>
