@@ -11,6 +11,28 @@
 
 
 
+//***<<<  6. 缩放耗时  >>>***
+
+//1280*960
+//给自己和给另一个mat一样 提前create没有区别
+//放大x2		80~150ms
+//缩小x0.5	10~30ms
+
+//cv::Mat mat = cv::imread("wgs.bmp");
+//cv::Mat mat2;
+//mat2.create(mat.cols * 2, mat.rows * 2, mat.type());
+//
+//QElapsedTimer tmr;
+//tmr.start();
+//cv::resize(mat, mat2, cv::Size(), 2, 2);
+//qint64 t = tmr.elapsed();
+//
+//QMessageBox::information(this, "", NUM_STR(t) + "ms");
+
+//***<<< 以上  6. 缩放耗时  >>>***
+
+
+
 //***<<<  5. cvtColor()耗时  >>>***
 
 //结论：1280*960 的图片，不同mat间转换2ms，同一个mat转换9ms
