@@ -17,6 +17,8 @@
 //给自己和给另一个mat一样 提前create没有区别
 //放大x2		80~150ms
 //缩小x0.5	10~30ms
+//
+//改用INTER_NEAREST 放大变为35~120ms 大约快一倍
 
 //cv::Mat mat = cv::imread("wgs.bmp");
 //cv::Mat mat2;
@@ -24,7 +26,8 @@
 //
 //QElapsedTimer tmr;
 //tmr.start();
-//cv::resize(mat, mat2, cv::Size(), 2, 2);
+////cv::resize(mat, mat2, cv::Size(), 2, 2);
+//cv::resize(mat, mat, cv::Size(), 2, 2, cv::INTER_NEAREST);
 //qint64 t = tmr.elapsed();
 //
 //QMessageBox::information(this, "", NUM_STR(t) + "ms");

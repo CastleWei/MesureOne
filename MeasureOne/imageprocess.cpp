@@ -4,7 +4,7 @@
 
 ImageProcess::ImageProcess()
 {
-	IMethod *p;
+	AbstractMethod *p;
 	p = new MaxValMethod();
 	methods[p->key()] = p;
 	p = new MaxValMethod();
@@ -44,8 +44,8 @@ ImageProcess::ImageProcess()
 ImageProcess::~ImageProcess()
 {
 	//清理容器中new出来的对象
-	foreach(IMethod* p, pipeline) delete p;
-	foreach(IMethod* p, methods.values()) delete p;
+	foreach(AbstractMethod* p, pipeline) delete p;
+	foreach(AbstractMethod* p, methods.values()) delete p;
 }
 
 int ImageProcess::process(ImageObject &imgObj)
@@ -58,7 +58,7 @@ int ImageProcess::process(ImageObject &imgObj)
 	QElapsedTimer tmr;
 	tmr.start();
 
-	foreach(IMethod* method, pipeline)
+	foreach(AbstractMethod* method, pipeline)
 		method->process(imgObj);
 
 	return (int)tmr.elapsed();
@@ -67,7 +67,7 @@ int ImageProcess::process(ImageObject &imgObj)
 bool ImageProcess::parse(QString code)
 {
 	QStringList cmdline = code.split('\n');
-	QList<IMethod*> tempList;
+	QList<AbstractMethod*> tempList;
 
 	int i;
 	for (i = 0; i < cmdline.length(); i++){
@@ -77,10 +77,10 @@ bool ImageProcess::parse(QString code)
 		QStringList args = cmd.split(' ');
 		QString name = args[0];
 
-		IMethod* p = methods.value(name, nullptr); //读取名字对应的方法对象
+		AbstractMethod* p = methods.value(name, nullptr); //读取名字对应的方法对象
 		if (p == nullptr) break;
 
-		IMethod* pnew = p->create(args); //创建含对应参数的方法对象
+		AbstractMethod* pnew = p->create(args); //创建含对应参数的方法对象
 		if (pnew == nullptr) break;
 
 		tempList.append(pnew);
@@ -88,7 +88,7 @@ bool ImageProcess::parse(QString code)
 	if (i == cmdline.length()){
 		//正常读取完毕
 		QMutexLocker locker(&this->mutex);
-		foreach(IMethod* m, pipeline) delete m;
+		foreach(AbstractMethod* m, pipeline) delete m;
 		pipeline = tempList;
 		return true;
 	}
@@ -96,7 +96,7 @@ bool ImageProcess::parse(QString code)
 		//失败，释放new出来的对象
 		//输出错误行
 		QMessageBox::information(nullptr, CN("命令错误"), CN("该行命令无法解析：\n") + cmdline[i]);
-		foreach(IMethod* m, tempList) delete m;
+		foreach(AbstractMethod* m, tempList) delete m;
 		return false;
 	}
 }
@@ -104,7 +104,7 @@ bool ImageProcess::parse(QString code)
 QString ImageProcess::toString(bool isRunning)
 {
 	QString str;
-	foreach(IMethod *method, pipeline){
+	foreach(AbstractMethod *method, pipeline){
 		QString line;
 		if (isRunning)
 			line = QString().sprintf("%3dms\t%1\n", method->dt).arg(method->toString());

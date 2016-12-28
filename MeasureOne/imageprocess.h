@@ -39,7 +39,7 @@ struct ImageObject{
 };
 
 //处理方法的抽象类
-class IMethod{
+class AbstractMethod{
 	QElapsedTimer tmr;
 
 public:
@@ -52,7 +52,7 @@ public:
 	int dt = 0;
 	virtual QString key() = 0;
 	virtual QString toString() = 0;
-	virtual IMethod* create(QStringList cmd) = 0;
+	virtual AbstractMethod* create(QStringList cmd) = 0;
 
 protected:
 	virtual void call(ImageObject &img) = 0;
@@ -72,8 +72,8 @@ public:
 	QString toString(bool isRunning);
 
 private:
-	QHash<QString, IMethod*> methods;
-	QList<IMethod*> pipeline;
+	QHash<QString, AbstractMethod*> methods;
+	QList<AbstractMethod*> pipeline;
 };
 
 // **************************
@@ -81,7 +81,7 @@ private:
 // **************************
 
 //极值法取光刀
-class MaxValMethod :public IMethod{
+class MaxValMethod :public AbstractMethod{
 	int thres = 150; //阈值，低于此值认为没有光刀
 	void laserMax(cv::Mat img, float *offs) {
 		int h = img.rows;
@@ -113,7 +113,7 @@ public:
 	virtual QString key(){ return CN("极值法取光刀"); }
 	virtual QString toString(){ return key() + CN(" 阈值=") + NUM_STR(thres); }
 
-	virtual IMethod* create(QStringList args){
+	virtual AbstractMethod* create(QStringList args){
 		int len = args.length();
 		MaxValMethod m; //临时对象
 
@@ -138,7 +138,7 @@ public:
 };
 
 //中点法取光刀
-class MidPointMethod :public IMethod{
+class MidPointMethod :public AbstractMethod{
 	int thres = 180; //认定为光刀的阈值，默认值
 	void midPoint(cv::Mat img, uchar T, float *offs){
 		int h = img.rows;
@@ -172,7 +172,7 @@ public:
 	virtual QString key(){ return CN("中点法取光刀"); }
 	virtual QString toString(){ return key() + CN(" 阈值=") + NUM_STR(thres); }
 
-	virtual IMethod* create(QStringList args){
+	virtual AbstractMethod* create(QStringList args){
 		int len = args.length();
 		MidPointMethod m; //临时对象
 
@@ -198,7 +198,7 @@ public:
 };
 
 //重心法取光刀
-class CentroidMethod :public IMethod{
+class CentroidMethod :public AbstractMethod{
 	void centroid(cv::Mat img, float *offs){
 		int h = img.rows;
 		int w = img.cols;
@@ -229,7 +229,7 @@ public:
 	virtual QString key(){ return CN("重心法取光刀"); }
 	virtual QString toString(){ return key(); }
 
-	virtual IMethod* create(QStringList args){
+	virtual AbstractMethod* create(QStringList args){
 		int len = args.length();
 		CentroidMethod m; //临时对象
 
@@ -246,7 +246,7 @@ public:
 };
 
 //边缘检测法取光刀（高旭）
-class GxEdgeDivideMethod :public IMethod{
+class GxEdgeDivideMethod :public AbstractMethod{
 	int thres = 150; //认定为光刀的高阈值，默认值
 	void EdgeDivide(uchar *p, int w, int h, float *offs)
 		//边缘检测，找出230以上的点，向两边检测二阶导数变化的点
@@ -348,7 +348,7 @@ public:
 	virtual QString key(){ return CN("边缘检测取光刀"); }
 	virtual QString toString(){ return key() + CN(" 阈值=") + NUM_STR(thres); }
 
-	virtual IMethod* create(QStringList args){
+	virtual AbstractMethod* create(QStringList args){
 		int len = args.length();
 		GxEdgeDivideMethod m; //临时对象
 
@@ -375,7 +375,7 @@ public:
 };
 
 //OTSU法取阈值
-class OtsuThres :public IMethod{
+class OtsuThres :public AbstractMethod{
 	int thres = 50; //OTSU取到的阈值不能太小
 	uchar otsu(cv::Mat img, float Gs[] = nullptr){
 		int h = img.rows;
@@ -431,7 +431,7 @@ public:
 	virtual QString key(){ return CN("OTSU取阈值"); }
 	virtual QString toString(){ return key() + CN(" 最小阈值=") + NUM_STR(thres); }
 
-	virtual IMethod* create(QStringList args){
+	virtual AbstractMethod* create(QStringList args){
 		int len = args.length();
 		OtsuThres m; //临时对象
 
@@ -456,7 +456,7 @@ public:
 };
 
 //按行OTSU分割
-class OtsuByRowSegmn :public IMethod{
+class OtsuByRowSegmn :public AbstractMethod{
 	int thres = 50; //OTSU取到的阈值不能太小
 	//按行取OTSU，阈值以下置黑
 	void otsuByRow(cv::Mat img){
@@ -527,7 +527,7 @@ public:
 	virtual QString key(){ return CN("按行OTSU分割"); }
 	virtual QString toString(){ return key() + CN(" 最小阈值=") + NUM_STR(thres); }
 
-	virtual IMethod* create(QStringList args){
+	virtual AbstractMethod* create(QStringList args){
 		int len = args.length();
 		OtsuByRowSegmn m; //临时对象
 
@@ -552,7 +552,7 @@ public:
 };
 
 //自适应阈值分割
-class AdaptiveSegmn :public IMethod{
+class AdaptiveSegmn :public AbstractMethod{
 	int th_h = 100; //光刀高阈值，默认值
 	int th_d = 50; //阈值浮动量 delta，默认值
 	void adaptive(cv::Mat img){
@@ -605,7 +605,7 @@ public:
 	virtual QString key(){ return CN("自适应阈值分割"); }
 	virtual QString toString(){ return key() + CN(" 高阈值=%1 浮动阈值=%2").arg(th_h).arg(th_d); }
 
-	virtual IMethod* create(QStringList args){
+	virtual AbstractMethod* create(QStringList args){
 		int len = args.length();
 		AdaptiveSegmn m; //临时对象
 
@@ -639,7 +639,7 @@ public:
 };
 
 //阈值分割（阈值以下置黑）
-class ThresholdSegmn :public IMethod{
+class ThresholdSegmn :public AbstractMethod{
 	void applyThreshold(cv::Mat img, uchar T){
 		int h = img.rows;
 		int w = img.cols;
@@ -659,7 +659,7 @@ public:
 	virtual QString key(){ return CN("阈值分割"); }
 	virtual QString toString(){ return key(); }
 
-	virtual IMethod* create(QStringList args){
+	virtual AbstractMethod* create(QStringList args){
 		//不用检查参数
 		//返回新的处理方法对象
 		return new ThresholdSegmn();
@@ -671,7 +671,7 @@ public:
 };
 
 //画光刀，出结果
-class MixLaserResult :public IMethod{
+class MixLaserResult :public AbstractMethod{
 	//把光刀结果用红线画在原图上
 	void mix(cv::Mat &src, float *offs){
 		int h = src.rows;
@@ -697,44 +697,45 @@ public:
 	virtual QString key(){ return CN("画光刀"); }
 	virtual QString toString(){ return key(); }
 
-	virtual IMethod* create(QStringList args){
+	virtual AbstractMethod* create(QStringList args){
 		//不用检查参数
 		//返回新的处理方法对象
 		return new MixLaserResult();
 	}
 
 	virtual void call(ImageObject &imgObj){
-		imgObj.src.copyTo(imgObj.dst);
+		cv::cvtColor(imgObj.src, imgObj.dst, cv::COLOR_BGR2RGB);
 		mix(imgObj.dst, imgObj.offs);
 	}
 };
 
 //显示原图，出结果
-class SrcImgResult :public IMethod{
+class SrcImgResult :public AbstractMethod{
 
 public:
 	virtual QString key(){ return CN("显示原图"); }
 	virtual QString toString(){ return key(); }
 
-	virtual IMethod* create(QStringList args){
+	virtual AbstractMethod* create(QStringList args){
 		//不用检查参数
 		//返回新的处理方法对象
 		return new SrcImgResult();
 	}
 
 	virtual void call(ImageObject &imgObj){
-		imgObj.dst = imgObj.src; //仅指向原图，不复制
+		//imgObj.dst = imgObj.src; //仅指向原图，不复制 //=>要转换颜色，否则发蓝
+		cv::cvtColor(imgObj.src, imgObj.dst, cv::COLOR_BGR2RGB);
 	}
 };
 
 //显示灰度图，出结果
-class GrayImgResult :public IMethod{
+class GrayImgResult :public AbstractMethod{
 
 public:
 	virtual QString key(){ return CN("显示灰度图"); }
 	virtual QString toString(){ return key(); }
 
-	virtual IMethod* create(QStringList args){
+	virtual AbstractMethod* create(QStringList args){
 		//不用检查参数
 		//返回新的处理方法对象
 		return new GrayImgResult();
@@ -742,17 +743,18 @@ public:
 
 	virtual void call(ImageObject &imgObj){
 		imgObj.dst = imgObj.img; //仅指向灰度图，不复制
+		//TODO: bug:一开始就用"显示灰度图\n 按需放大"，就会挂掉，不知道为什么
 	}
 };
 
 //按需放大，出结果
-class ZoomResult :public IMethod{
+class ZoomResult :public AbstractMethod{
 
 public:
 	virtual QString key(){ return CN("按需放大"); }
 	virtual QString toString(){ return key(); }
 
-	virtual IMethod* create(QStringList args){
+	virtual AbstractMethod* create(QStringList args){
 		//不用检查参数
 		//返回新的处理方法对象
 		return new ZoomResult();
@@ -760,7 +762,7 @@ public:
 
 	virtual void call(ImageObject &imgObj){
 		if (imgObj.dst.cols < 1000)
-			resize(imgObj.dst, imgObj.dst, cv::Size(), 2, 2);
+			resize(imgObj.dst, imgObj.dst, cv::Size(), 2, 2, cv::INTER_NEAREST);
 	}
 };
 
