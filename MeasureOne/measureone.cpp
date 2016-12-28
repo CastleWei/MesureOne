@@ -78,6 +78,21 @@ MeasureOne::MeasureOne(QWidget *parent)
 	connect(ui.spinSpeed, SIGNAL(valueChanged(int)), this, SLOT(OnMotionSpeed(int)));
 	OnMotionSpeed(10); //³õÊ¼ËÙ¶È
 
+	ui.menu_View->addAction(ui.dockMotion->toggleViewAction());
+	ui.menu_View->addAction(ui.dockCmds->toggleViewAction());
+	ui.menu_View->addAction(ui.dockCalibr->toggleViewAction());
+	ui.menu_View->addAction(ui.dockOutput->toggleViewAction());
+
+	QSettings qs("ui_settings.ini", QSettings::IniFormat, this);
+	restoreGeometry(qs.value("mainwindow/geometry").toByteArray());
+	restoreState(qs.value("mainwindow/windowstate").toByteArray());
+
+	ui.edtCaliLen->setText(qs.value("calibration/realAB").toString());
+	ui.edtCaliZ0->setText(qs.value("calibration/z0").toString());
+	ui.edtCaliZe->setText(qs.value("calibration/ze").toString());
+
+	ui.cmbPipeline->setCurrentIndex(qs.value("cmdpipeline/currentindex").toInt());
+
 	vwdb::initdb(ui.textOutput);
 }
 
@@ -163,7 +178,8 @@ QImage MeasureOne::getQimg(ImageObject &imgObj)
 void MeasureOne::timerEvent(QTimerEvent *event)
 {
 	statusFrameIntvl->setText(NUM_STR(cam->dt) + "ms");
-	ui.txtPipeline->setPlainText(imgProc.toString(cam->isRunning()));
+	if (!ui.btnPipeline->isChecked())
+		ui.txtPipeline->setPlainText(imgProc.toString(cam->isRunning()));
 }
 
 void MeasureOne::keyPressEvent(QKeyEvent *event)
@@ -229,6 +245,21 @@ void MeasureOne::keyReleaseEvent(QKeyEvent *event)
 	}
 	else
 		QMainWindow::keyReleaseEvent(event);
+}
+
+void MeasureOne::closeEvent(QCloseEvent *event)
+{
+	QSettings qs("ui_settings.ini", QSettings::IniFormat, this);
+	qs.setValue("mainwindow/geometry", saveGeometry());
+	qs.setValue("mainwindow/windowstate", saveState());
+
+	qs.setValue("calibration/realAB", ui.edtCaliLen->text());
+	qs.setValue("calibration/z0", ui.edtCaliZ0->text());
+	qs.setValue("calibration/ze", ui.edtCaliZe->text());
+
+	qs.setValue("cmdpipeline/currentindex", ui.cmbPipeline->currentIndex());
+
+	QMainWindow::closeEvent(event);
 }
 
 void MeasureOne::showImg()

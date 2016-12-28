@@ -58,7 +58,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>616</width>
+         <width>491</width>
          <height>627</height>
         </rect>
        </property>
@@ -173,21 +173,35 @@
      <height>30</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="menu_File">
     <property name="title">
-     <string>播放</string>
+     <string>文件(&amp;F)</string>
     </property>
+    <addaction name="actFromCam"/>
     <addaction name="actFromPic"/>
     <addaction name="actFromVideo"/>
-    <addaction name="actFromCam"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menu_Play">
+    <property name="title">
+     <string>播放(&amp;P)</string>
+    </property>
+    <addaction name="action"/>
     <addaction name="separator"/>
     <addaction name="actFastPlay"/>
-    <addaction name="separator"/>
-    <addaction name="actShowOnlySrc"/>
-    <addaction name="actShowOnlyLazer"/>
-    <addaction name="actShowMixed"/>
+    <addaction name="action_2"/>
    </widget>
-   <addaction name="menu"/>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>视图(&amp;V)</string>
+    </property>
+    <addaction name="action_4"/>
+    <addaction name="action_5"/>
+    <addaction name="separator"/>
+   </widget>
+   <addaction name="menu_File"/>
+   <addaction name="menu_Play"/>
+   <addaction name="menu_View"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="font">
@@ -485,7 +499,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget">
+  <widget class="QDockWidget" name="dockCmds">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
      <horstretch>0</horstretch>
@@ -593,7 +607,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget_2">
+  <widget class="QDockWidget" name="dockCalibr">
    <property name="windowTitle">
     <string>标定面板</string>
    </property>
@@ -714,7 +728,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget_4">
+  <widget class="QDockWidget" name="dockOutput">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
      <horstretch>0</horstretch>
@@ -881,28 +895,24 @@
     <string>快速播放</string>
    </property>
   </action>
-  <action name="actShowOnlySrc">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
+  <action name="action">
    <property name="text">
-    <string>仅显示原图</string>
+    <string>播放/暂停</string>
    </property>
   </action>
-  <action name="actShowOnlyLazer">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
+  <action name="action_2">
    <property name="text">
-    <string>仅显示光刀</string>
+    <string>按需放大</string>
    </property>
   </action>
-  <action name="actShowMixed">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
+  <action name="action_4">
    <property name="text">
-    <string>光刀叠加原图</string>
+    <string>播放顶栏</string>
+   </property>
+  </action>
+  <action name="action_5">
+   <property name="text">
+    <string>播放底栏</string>
    </property>
   </action>
  </widget>

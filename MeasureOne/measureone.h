@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QKeyEvent>
+#include <QSettings>
 #include "ui_measureone.h"
 #include "cameracontroller.h"
 #include "motioncontroller.h"
@@ -35,6 +36,7 @@ private:
 	virtual void timerEvent(QTimerEvent *event);
 	virtual void keyPressEvent(QKeyEvent *event);
 	virtual void keyReleaseEvent(QKeyEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
 
 private slots:
 	void showImg();
