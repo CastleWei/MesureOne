@@ -45,7 +45,7 @@
        <enum>QFrame::Raised</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="pageLive">
        <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -166,7 +166,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QOpenGLWidget" name="openGLWidget"/>
+         <widget class="ModelWidget" name="openGLWidget"/>
         </item>
        </layout>
       </widget>
@@ -1068,6 +1068,11 @@
    <class>MeasureLabel</class>
    <extends>QLabel</extends>
    <header>measurelabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ModelWidget</class>
+   <extends>QOpenGLWidget</extends>
+   <header>modelwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources>

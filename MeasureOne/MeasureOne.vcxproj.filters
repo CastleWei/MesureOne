@@ -33,6 +33,12 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="GL Files">
+      <UniqueIdentifier>{858d36f7-d14b-409a-880e-632626ffe9c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Files">
+      <UniqueIdentifier>{545d18e5-6707-4843-9826-8ce81a0e45ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -56,32 +62,17 @@
     <ClCompile Include="GeneratedFiles\Release\moc_cameracontroller.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="cameracontroller.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="motioncontroller.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imageprocess.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_motioncontroller.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_motioncontroller.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="calibr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_calibr.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_calibr.cpp">
       <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="vwdb.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_showlabel.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -101,6 +92,33 @@
     <ClCompile Include="GeneratedFiles\Release\moc_measurelabel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_modelwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_modelwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="modelwidget.cpp">
+      <Filter>GL Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform3D.cpp">
+      <Filter>GL Files</Filter>
+    </ClCompile>
+    <ClCompile Include="calibr.cpp">
+      <Filter>My Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vwdb.cpp">
+      <Filter>My Files</Filter>
+    </ClCompile>
+    <ClCompile Include="motioncontroller.cpp">
+      <Filter>My Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cameracontroller.cpp">
+      <Filter>My Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imageprocess.cpp">
+      <Filter>My Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="measureone.h">
@@ -112,40 +130,57 @@
     <CustomBuild Include="measureone.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="cameracontroller.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="motioncontroller.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="calibr.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="showlabel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="measurelabel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="modelwidget.h">
+      <Filter>GL Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="calibr.h">
+      <Filter>My Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="cameracontroller.h">
+      <Filter>My Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="motioncontroller.h">
+      <Filter>My Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_measureone.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="imageprocess.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="exps.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vwdb.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Transform3D.h">
+      <Filter>GL Files</Filter>
     </ClInclude>
     <ClInclude Include="calidata.h">
-      <Filter>Header Files</Filter>
+      <Filter>My Files</Filter>
     </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>My Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exps.h">
+      <Filter>My Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imageprocess.h">
+      <Filter>My Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vwdb.h">
+      <Filter>My Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex.h">
+      <Filter>GL Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\simple.frag">
+      <Filter>GL Files</Filter>
+    </None>
+    <None Include="shaders\simple.vert">
+      <Filter>GL Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
