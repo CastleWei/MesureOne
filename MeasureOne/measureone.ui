@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1234</width>
+    <width>1277</width>
     <height>816</height>
    </rect>
   </property>
@@ -37,59 +37,136 @@
      <number>4</number>
     </property>
     <item>
-     <widget class="QScrollArea" name="scrollArea">
+     <widget class="QStackedWidget" name="stackedWidget">
       <property name="frameShape">
        <enum>QFrame::Box</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <property name="verticalScrollBarPolicy">
-       <enum>Qt::ScrollBarAsNeeded</enum>
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-      <property name="horizontalScrollBarPolicy">
-       <enum>Qt::ScrollBarAsNeeded</enum>
-      </property>
-      <property name="widgetResizable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>491</width>
-         <height>627</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+      <widget class="QWidget" name="pageLive">
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <property name="leftMargin">
-         <number>4</number>
+         <number>0</number>
         </property>
         <property name="topMargin">
-         <number>4</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>4</number>
+         <number>0</number>
         </property>
         <property name="bottomMargin">
-         <number>4</number>
+         <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="lblShow">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+         <widget class="QScrollArea" name="scrollArea">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>534</width>
+             <height>627</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="leftMargin">
+             <number>4</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>4</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="ShowLabel" name="lblShow">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageMeasure">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="MeasureLabel" name="lblMeasure">
           <property name="text">
            <string/>
           </property>
          </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageModel">
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QOpenGLWidget" name="openGLWidget"/>
         </item>
        </layout>
       </widget>
@@ -159,6 +236,27 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="btnFromCam">
+         <property name="text">
+          <string>相机</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnFromPic">
+         <property name="text">
+          <string>图片</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnFromVideo">
+         <property name="text">
+          <string>视频</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -169,7 +267,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1234</width>
+     <width>1277</width>
      <height>30</height>
     </rect>
    </property>
@@ -229,6 +327,10 @@
    <addaction name="separator"/>
    <addaction name="actTest"/>
    <addaction name="actTry"/>
+   <addaction name="separator"/>
+   <addaction name="actLive"/>
+   <addaction name="actMeasure"/>
+   <addaction name="actModel"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockMotion">
@@ -851,7 +953,10 @@
      <normaloff>:/MeasureOne/Resources/Question_127.84019975031px_1183370_easyicon.net.png</normaloff>:/MeasureOne/Resources/Question_127.84019975031px_1183370_easyicon.net.png</iconset>
    </property>
    <property name="text">
-    <string>测试</string>
+    <string>测试一</string>
+   </property>
+   <property name="toolTip">
+    <string>测试一</string>
    </property>
   </action>
   <action name="actTry">
@@ -860,7 +965,7 @@
      <normaloff>:/MeasureOne/Resources/Settings_128.48120300752px_1183382_easyicon.net.png</normaloff>:/MeasureOne/Resources/Settings_128.48120300752px_1183382_easyicon.net.png</iconset>
    </property>
    <property name="text">
-    <string>Try</string>
+    <string>测试二</string>
    </property>
   </action>
   <action name="actFromPic">
@@ -915,8 +1020,56 @@
     <string>播放底栏</string>
    </property>
   </action>
+  <action name="actLive">
+   <property name="icon">
+    <iconset resource="measureone.qrc">
+     <normaloff>:/MeasureOne/Resources/Statics_129.78227848101px_1183381_easyicon.net.png</normaloff>:/MeasureOne/Resources/Statics_129.78227848101px_1183381_easyicon.net.png</iconset>
+   </property>
+   <property name="text">
+    <string>实时</string>
+   </property>
+   <property name="toolTip">
+    <string>实时图像</string>
+   </property>
+  </action>
+  <action name="actMeasure">
+   <property name="icon">
+    <iconset resource="measureone.qrc">
+     <normaloff>:/MeasureOne/Resources/Statics_129.78227848101px_1183381_easyicon.net.png</normaloff>:/MeasureOne/Resources/Statics_129.78227848101px_1183381_easyicon.net.png</iconset>
+   </property>
+   <property name="text">
+    <string>测量</string>
+   </property>
+   <property name="toolTip">
+    <string>截面尺寸测量</string>
+   </property>
+  </action>
+  <action name="actModel">
+   <property name="icon">
+    <iconset resource="measureone.qrc">
+     <normaloff>:/MeasureOne/Resources/Statics_129.78227848101px_1183381_easyicon.net.png</normaloff>:/MeasureOne/Resources/Statics_129.78227848101px_1183381_easyicon.net.png</iconset>
+   </property>
+   <property name="text">
+    <string>模型</string>
+   </property>
+   <property name="toolTip">
+    <string>3D立体模型</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>ShowLabel</class>
+   <extends>QLabel</extends>
+   <header>showlabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MeasureLabel</class>
+   <extends>QLabel</extends>
+   <header>measurelabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="measureone.qrc"/>
  </resources>

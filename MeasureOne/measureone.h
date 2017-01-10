@@ -9,6 +9,7 @@
 #include "motioncontroller.h"
 #include "imageprocess.h"
 #include "calibr.h"
+#include "calidata.h"
 
 class MeasureOne : public QMainWindow
 {
@@ -27,6 +28,7 @@ private:
 	CameraController *cam = nullptr;
 	MotionController *motion = nullptr;
 	Calibr *cali = nullptr;
+	CaliData calidata;
 	ImageProcess imgProc;
 	int tmr; //每隔一秒显示运算耗时
 
@@ -44,12 +46,19 @@ private slots:
 
 	void OnTest();
 	void OnTry();
+
 	void OnCapture(bool checked);
 	void OnPlayPause(bool checked);
 	void OnFastPlay(bool checked);
+	void OnSrcTypeSelected(QAction *action);
+
+	void on_actLive_triggered();
+	void on_actMeasure_triggered();
+	void on_actModel_triggered();
+
 	void OnPplBtnClicked(bool checked);
 	void OnCmbIndexChanged(int index);
-	void OnSrcTypeSelected(QAction *action);
+
 	void OnMotionConnect(bool checked);
 	void OnMotionUp(bool checked);
 	void OnMotionDown(bool checked);
@@ -59,6 +68,7 @@ private slots:
 	void OnMotionRight(bool checked);
 	void OnMotionStop(bool checked);
 	void OnMotionSpeed(int speed);
+
 	void OnCaliA();
 	void OnCaliB();
 	void OnCaliGo();

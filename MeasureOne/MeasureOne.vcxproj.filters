@@ -71,15 +71,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_motioncontroller.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_showwidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_showwidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="showwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="calibr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,6 +82,24 @@
     </ClCompile>
     <ClCompile Include="vwdb.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_showlabel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_showlabel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="showlabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="measurelabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_measurelabel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_measurelabel.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -109,10 +118,13 @@
     <CustomBuild Include="motioncontroller.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="showwidget.h">
+    <CustomBuild Include="calibr.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="calibr.h">
+    <CustomBuild Include="showlabel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="measurelabel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -130,6 +142,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vwdb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="calidata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

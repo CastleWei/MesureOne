@@ -15,6 +15,8 @@ MeasureOne::MeasureOne(QWidget *parent)
 	cam = new CameraController(this, imgProc);
 	motion = new MotionController(this);
 	cali = new Calibr(*motion, imgProc, cam->imgObj);
+	
+	ui.lblMeasure->init(&cam->imgObj, &calidata);
 
 	//图像来源 单选菜单组
 	grpSrcType = new QActionGroup(this);
@@ -49,6 +51,7 @@ MeasureOne::MeasureOne(QWidget *parent)
 	ui.txtPipeline->setPlainText(imgProc.toString(false));
 
 	connect(cam, SIGNAL(imageCollected()), this, SLOT(showImg()));
+	connect(cam, SIGNAL(imageCollected()), ui.lblMeasure, SLOT(update()));
 	connect(cam, SIGNAL(finishCollecting()), this, SLOT(finishCollecting()));
 
 	connect(ui.btnMotionUp, SIGNAL(clicked(bool)), this, SLOT(OnMotionUp(bool)));
@@ -58,18 +61,26 @@ MeasureOne::MeasureOne(QWidget *parent)
 	connect(ui.btnMotionLeft, SIGNAL(clicked(bool)), this, SLOT(OnMotionLeft(bool)));
 	connect(ui.btnMotionRight, SIGNAL(clicked(bool)), this, SLOT(OnMotionRight(bool)));
 	connect(ui.btnMotionStop, SIGNAL(clicked(bool)), this, SLOT(OnMotionStop(bool)));
+	
 	connect(ui.btnCaliA, SIGNAL(clicked()), this, SLOT(OnCaliA()));
 	connect(ui.btnCaliB, SIGNAL(clicked()), this, SLOT(OnCaliB()));
 	connect(ui.btnCaliGo, SIGNAL(clicked()), this, SLOT(OnCaliGo()));
 	connect(ui.btnCaliStop, SIGNAL(clicked()), this, SLOT(OnCaliStop()));
 	connect(ui.btnCaliCalc, SIGNAL(clicked()), this, SLOT(OnCaliCalc()));
+	
 	connect(ui.btnPlayPause, SIGNAL(clicked(bool)), this, SLOT(OnPlayPause(bool)));
+	
 	connect(ui.actCapture, SIGNAL(triggered(bool)), this, SLOT(OnCapture(bool)));
 	connect(ui.actConnectMotion, SIGNAL(triggered(bool)), this, SLOT(OnMotionConnect(bool)));
 	connect(ui.actFastPlay, SIGNAL(triggered(bool)), this, SLOT(OnFastPlay(bool)));
 	connect(ui.actTest, SIGNAL(triggered()), this, SLOT(OnTest()));
 	connect(ui.actTry, SIGNAL(triggered()), this, SLOT(OnTry()));
+	
 	connect(grpSrcType, SIGNAL(triggered(QAction*)), this, SLOT(OnSrcTypeSelected(QAction*)));
+	connect(ui.btnFromCam, SIGNAL(clicked()), ui.actFromCam, SLOT(trigger()));
+	connect(ui.btnFromPic, SIGNAL(clicked()), ui.actFromPic, SLOT(trigger()));
+	connect(ui.btnFromVideo, SIGNAL(clicked()), ui.actFromVideo, SLOT(trigger()));
+	
 	connect(ui.btnPipeline, SIGNAL(clicked(bool)), this, SLOT(OnPplBtnClicked(bool)));
 	connect(ui.cmbPipeline, SIGNAL(currentIndexChanged(int)), this, SLOT(OnCmbIndexChanged(int)));
 
@@ -93,7 +104,7 @@ MeasureOne::MeasureOne(QWidget *parent)
 
 	ui.cmbPipeline->setCurrentIndex(qs.value("cmdpipeline/currentindex").toInt());
 
-	vwdb::initdb(ui.textOutput);
+	vwdb::initdb(ui.textOutput, ui.statusBar);
 }
 
 MeasureOne::~MeasureOne()
@@ -393,14 +404,12 @@ void MeasureOne::OnSrcTypeSelected(QAction *action)
 		cam->srcType = CameraController::fromPic;
 		QString path = QFileDialog::getOpenFileName(this, CN("打开图片"));
 		cam->path = path;
-		ui.actCapture->trigger();
 	}
 	else if (action == ui.actFromVideo){
 		ui.sliderProgress->setEnabled(true);
 		cam->srcType = CameraController::fromVideo;
 		QString path = QFileDialog::getOpenFileName(this, CN("打开视频"));
 		cam->path = path;
-		ui.actCapture->trigger();
 	}
 	else if (action == ui.actFromCam){
 		ui.sliderProgress->setEnabled(false);
@@ -408,6 +417,25 @@ void MeasureOne::OnSrcTypeSelected(QAction *action)
 		cam->camNum = n;
 		cam->srcType = CameraController::fromCam;
 	}
+	ui.actCapture->trigger();
+}
+
+
+void MeasureOne::on_actLive_triggered()
+{
+	ui.stackedWidget->setCurrentIndex(0);
+}
+
+
+void MeasureOne::on_actMeasure_triggered()
+{
+	ui.stackedWidget->setCurrentIndex(1);
+}
+
+
+void MeasureOne::on_actModel_triggered()
+{
+	ui.stackedWidget->setCurrentIndex(2);
 }
 
 void MeasureOne::OnMotionConnect(bool checked)

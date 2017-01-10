@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="MeasureOne">
+    <file>Resources/Statics_129.78227848101px_1183381_easyicon.net.png</file>
     <file>Resources/tick_176.95726495726px_1200700_easyicon.net.png</file>
     <file>Resources/pause_128px_1205832_easyicon.net.png</file>
     <file>Resources/play_128px_1205833_easyicon.net.png</file>
