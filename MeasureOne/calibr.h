@@ -45,7 +45,7 @@ private:
 	int beginpos; //偏移量标定时 开始的步数
 	int maxoffs; //最大偏移量，与图像宽度有关
 
-	int sampleIntvl = 100; //采样延迟
+	int sampleIntvl = 500; //采样延迟
 	int tmr; //定时采样的timer
 };
 
