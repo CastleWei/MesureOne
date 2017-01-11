@@ -1,10 +1,13 @@
 #include "modelwidget.h"
+#include "vwdb.h"
+#include "common.h"
 
 #include <QDebug>
 #include <QString>
 #include <QOpenGLShaderProgram>
 #include <QExposeEvent>
 #include "vertex.h"
+#include <glm/gtc/type_ptr.hpp>
 
 // Front Verticies
 #define VERTEX_FTR Vertex( QVector3D( 0.5f,  0.5f,  0.5f), QVector3D( 1.0f, 0.0f, 0.0f ) )
@@ -57,7 +60,7 @@ static const Vertex sg_vertexes[] = {
 ModelWidget::ModelWidget(QWidget *parent)
 :QOpenGLWidget(parent)
 {
-	m_transform.translate(0.0f, 0.0f, -5.0f);
+	//m_transform.translate(0.0f, 0.0f, -5.0f);
 }
 
 void ModelWidget::initializeGL()
@@ -65,7 +68,7 @@ void ModelWidget::initializeGL()
 	// Initialize OpenGL Backend
 	initializeOpenGLFunctions();
 	connect(context(), SIGNAL(aboutToBeDestroyed()), this, SLOT(teardownGL()), Qt::DirectConnection);
-	connect(this, SIGNAL(frameSwapped()), this, SLOT(update()));
+	//connect(this, SIGNAL(frameSwapped()), this, SLOT(update()));
 	printVersionInformation();
 
 	// Set global information
@@ -83,7 +86,8 @@ void ModelWidget::initializeGL()
 
 		// Cache Uniform Locations
 		u_modelToWorld = m_program->uniformLocation("modelToWorld");
-		u_worldToView = m_program->uniformLocation("worldToView");
+		u_worldToCamera = m_program->uniformLocation("worldToCamera");
+		u_cameraToView = m_program->uniformLocation("cameraToView");
 
 		// Create Buffer (Do not release until VAO is created)
 		m_vertex.create();
@@ -104,12 +108,13 @@ void ModelWidget::initializeGL()
 		m_vertex.release();
 		m_program->release();
 	}
+	//m_camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 }
 
 void ModelWidget::resizeGL(int width, int height)
 {
 	m_projection.setToIdentity();
-	m_projection.perspective(45.0f, width / float(height), 0.0f, 1000.0f);
+	m_projection.perspective(m_camera.Zoom, width / float(height), 0.1f, 1000.0f);
 }
 
 void ModelWidget::paintGL()
@@ -119,7 +124,10 @@ void ModelWidget::paintGL()
 
 	// Render using our shader
 	m_program->bind();
-	m_program->setUniformValue(u_worldToView, m_projection);
+	QMatrix4x4 worldToCamera(glm::value_ptr(m_camera.GetViewMatrix()));
+	worldToCamera = worldToCamera.transposed();
+	m_program->setUniformValue(u_worldToCamera, worldToCamera);
+	m_program->setUniformValue(u_cameraToView, m_projection);
 	{
 		m_object.bind();
 		m_program->setUniformValue(u_modelToWorld, m_transform.toMatrix());
@@ -140,10 +148,46 @@ void ModelWidget::teardownGL()
 void ModelWidget::update()
 {
 	// Update instance information
-	m_transform.rotate(1.0f, QVector3D(0.4f, 0.3f, 0.3f));
+	//m_transform.rotate(1.0f, QVector3D(0.4f, 0.3f, 0.3f));
+	m_projection.setToIdentity();
+	m_projection.perspective(m_camera.Zoom, width() / float(height()), 0.1f, 1000.0f);
 
 	// Schedule a redraw
 	QOpenGLWidget::update();
+}
+
+void ModelWidget::mousePressEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::RightButton ||
+		event->button() == Qt::LeftButton)
+	{
+		lastPos = event->pos();
+	}
+}
+
+void ModelWidget::mouseMoveEvent(QMouseEvent *event)
+{
+	Qt::MouseButtons bs = event->buttons();
+	if ((bs & Qt::RightButton) || (bs & Qt::LeftButton)){
+		//°´ÁË×ó¼ü»òÓÒ¼ü
+
+		QPoint pos = event->pos();
+		QPoint off(pos.x() - lastPos.x(), lastPos.y() - pos.y());
+		lastPos = pos;
+
+		if (bs & Qt::RightButton)
+			m_camera.ProcessMouseDragging(off.x(), off.y());
+		else if (bs & Qt::LeftButton)
+			m_camera.ProcessMouseMovement(off.x(), off.y());
+
+		update();
+	}
+}
+
+void ModelWidget::wheelEvent(QWheelEvent *event)
+{
+ 	m_camera.ProcessMouseScroll(event->delta());
+	update();
 }
 
 /*******************************************************************************
