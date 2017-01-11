@@ -47,7 +47,7 @@ void MeasureLabel::paintEvent(QPaintEvent * event)
 
 	//**** TODO: bug: 动态采集时，切换到测量页会崩溃，一开始就在测量页不会，预计是showlbl刷新时的问题
 
-	QMutexLocker(&imgObj->mutex);
+	QMutexLocker locker(&imgObj->mutex);
 
 	int w = this->width();
 	int h = this->height();

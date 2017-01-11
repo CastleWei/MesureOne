@@ -44,9 +44,6 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <property name="currentIndex">
-       <number>2</number>
-      </property>
       <widget class="QWidget" name="pageLive">
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <property name="spacing">

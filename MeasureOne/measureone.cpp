@@ -50,8 +50,9 @@ MeasureOne::MeasureOne(QWidget *parent)
 	imgProc.parse(ui.cmbPipeline->itemData(ui.cmbPipeline->currentIndex()).toString());
 	ui.txtPipeline->setPlainText(imgProc.toString(false));
 
-	connect(cam, SIGNAL(imageCollected()), this, SLOT(showImg()));
-	connect(cam, SIGNAL(imageCollected()), ui.lblMeasure, SLOT(update()));
+	connect(cam, SIGNAL(imageCollected()), this, SLOT(updateViews()));
+	//connect(cam, SIGNAL(imageCollected()), this, SLOT(showImg()));
+	//connect(cam, SIGNAL(imageCollected()), ui.lblMeasure, SLOT(update()));
 	connect(cam, SIGNAL(finishCollecting()), this, SLOT(finishCollecting()));
 
 	connect(ui.btnMotionUp, SIGNAL(clicked(bool)), this, SLOT(OnMotionUp(bool)));
@@ -159,33 +160,6 @@ void MeasureOne::savePipelins(QComboBox *cmb)
 	}
 }
 
-//******！！！！！必须在mutex保护下使用
-QImage MeasureOne::getQimg(ImageObject &imgObj)
-{
-	QImage qimg;
-	cv::Mat mat;
-
-	if (!imgObj.dst.empty())
-		mat = imgObj.dst;
-	else if (!imgObj.img.empty())
-		mat = imgObj.img;
-	else
-		mat = imgObj.src;
-
-	int n = mat.elemSize(); //每点的字节数
-	QImage::Format format;
-	if (n == 3)
-		format = QImage::Format_RGB888;
-	else if (n == 1)
-		format = QImage::Format_Grayscale8;
-	else{
-		qDebug() << "qimage format error, elemsize=" << n;
-		return QImage();
-	}
-
-	return QImage(mat.data, mat.cols, mat.rows, mat.cols*n, format);
-}
-
 void MeasureOne::timerEvent(QTimerEvent *event)
 {
 	statusFrameIntvl->setText(NUM_STR(cam->dt) + "ms");
@@ -273,20 +247,23 @@ void MeasureOne::closeEvent(QCloseEvent *event)
 	QMainWindow::closeEvent(event);
 }
 
-void MeasureOne::showImg()
+void MeasureOne::updateViews()
 {
-	ImageObject &imgObj = cam->imgObj;
-
-	//statusFrameIntvl->setText(NUM_STR(cam->dt) + "ms"); //每一帧都显示效果不好
-
-	//setValue每次都会触发change信号，暂时不知道怎么调
-	//if (cam->srcType == CameraController::fromVideo) 
-	//	ui.sliderProgress->setValue(cam->curpos*ui.sliderProgress->maximum());
-
-	QMutexLocker(&imgObj.mutex);
-	//QImage qimg = getQimg(imgObj);
-	//if (qimg.width() < 1000) qimg = qimg.scaledToWidth(qimg.width() << 1);
-	ui.lblShow->setPixmap(QPixmap::fromImage(getQimg(imgObj)));
+	int which = ui.stackedWidget->currentIndex();
+	switch (which)
+	{
+	case 0:
+		ui.lblShow->update(&cam->imgObj);
+		break;
+	case 1:
+		ui.lblMeasure->update();
+		break;
+	case 2:
+		ui.openGLWidget->update();
+		break;
+	default:
+		break;
+	}
 }
 
 void MeasureOne::finishCollecting()

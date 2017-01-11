@@ -22,14 +22,14 @@ void Calibr::takesamples()
 {
 	float curroff; //本次采样的偏移量
 	int currpos = abs(motion.axes[X].pos - beginpos); //当前行进步数
-	QMutexLocker(&imgObj.mutex);
+	QMutexLocker locker(&imgObj.mutex);
 	baseline = getTwoLines(imgObj, curroff);
 	samples.append(QPointF(currpos, curroff)); //此时存的是步数和偏移量
 }
 
 float Calibr::getTwoLines(ImageObject &imgObj, float &off)
 {
-	QMutexLocker(&imgObj.mutex);
+	QMutexLocker locker(&imgObj.mutex);
 	//先创建以偏移量为自变量的直方图
 	int len = imgObj.offsLen;
 	int width = imgObj.src.cols;

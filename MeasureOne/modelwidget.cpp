@@ -149,8 +149,6 @@ void ModelWidget::update()
 {
 	// Update instance information
 	//m_transform.rotate(1.0f, QVector3D(0.4f, 0.3f, 0.3f));
-	m_projection.setToIdentity();
-	m_projection.perspective(m_camera.Zoom, width() / float(height()), 0.1f, 1000.0f);
 
 	// Schedule a redraw
 	QOpenGLWidget::update();
@@ -187,6 +185,10 @@ void ModelWidget::mouseMoveEvent(QMouseEvent *event)
 void ModelWidget::wheelEvent(QWheelEvent *event)
 {
  	m_camera.ProcessMouseScroll(event->delta());
+
+	m_projection.setToIdentity();
+	m_projection.perspective(m_camera.Zoom, width() / float(height()), 0.1f, 1000.0f);
+
 	update();
 }
 

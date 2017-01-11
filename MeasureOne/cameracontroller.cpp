@@ -72,7 +72,7 @@ void CameraController::runVideoCam()
 
 	//第一次读取，初始化光刀偏移量数组
 	{
-		QMutexLocker(&imgObj.mutex);
+		QMutexLocker locker(&imgObj.mutex);
 		cap >> src;
 		if (src.empty()) return;
 		imgObj.newOffs(src.rows);
@@ -98,7 +98,7 @@ void CameraController::runVideoCam()
 		
 		//读取每帧图片并处理
 		{
-			QMutexLocker(&imgObj.mutex);
+			QMutexLocker locker(&imgObj.mutex);
 			if (!cap.read(src)) break;
 			//cvtColor(src, img, COLOR_BGR2GRAY); 在imgProc.process里面做了
 		}

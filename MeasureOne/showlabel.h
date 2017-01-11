@@ -12,16 +12,16 @@ class ShowLabel : public QLabel
 public:
 	ShowLabel(QObject *parent);
 	~ShowLabel();
-
-	//void startRefreshing(CameraController *cam);
-	//void stopRefreshing();
+	void update(ImageObject *imgObj);
 
 private:
-	//CameraController *cam;
+	bool needUpdate = false;
+	ImageObject *imgObj = nullptr;
+
+	void showImg(ImageObject &imgObj);
+	QImage getQimg(ImageObject &imgObj);
 
 	virtual void paintEvent(QPaintEvent * event);
-	virtual void mousePressEvent(QMouseEvent * event);
-	//virtual void timerEvent(QTimerEvent * event);
 };
 
 #endif // SHOWWIDGET_H

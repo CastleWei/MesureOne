@@ -30,7 +30,7 @@ public:
 	int camNum = 0; //摄像机编号
 	bool isPlaying = true;
 	bool willRest = true; //每帧之间是否休息
-	int msecRest = 30; //每帧之间休息的毫秒数
+	int msecRest = 15; //每帧之间休息的毫秒数
 	//和进度条有关的一律不能用
 	//bool jump = false; //是否用进度条跳转
 	//float newpos = 0.0f; //进度条跳到的新位置，0~1

@@ -23,9 +23,12 @@ public:
 	void initializeGL();
 	void resizeGL(int width, int height);
 	void paintGL();
-	protected slots:
-	void teardownGL();
+
+public slots:
 	void update();
+
+protected slots:
+	void teardownGL();
 
 private:
 	// OpenGL State Information

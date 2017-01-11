@@ -34,14 +34,13 @@ private:
 
 	void readPipelins(QComboBox *cmb);
 	void savePipelins(QComboBox *cmb);
-	QImage getQimg(ImageObject &imgObj);
 	virtual void timerEvent(QTimerEvent *event);
 	virtual void keyPressEvent(QKeyEvent *event);
 	virtual void keyReleaseEvent(QKeyEvent *event);
 	virtual void closeEvent(QCloseEvent *event);
 
 private slots:
-	void showImg();
+	void updateViews();
 	void finishCollecting();
 
 	void OnTest();
