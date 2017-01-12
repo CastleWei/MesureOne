@@ -5,11 +5,13 @@
 #include <QThread>
 #include <QImage>
 #include <QMutex>
+#include <QFile>
 #include <QMutexLocker>
 #include <QElapsedTimer>
 #include <opencv2/opencv.hpp>
 
 #include "imageprocess.h"
+#include "motioncontroller.h"
 
 class CameraController : public QThread
 {
@@ -31,6 +33,16 @@ public:
 	bool isPlaying = true;
 	bool willRest = true; //每帧之间是否休息
 	int msecRest = 15; //每帧之间休息的毫秒数
+
+	//录像相关
+	bool recording = false;
+	bool willRecord = false;
+	int nRcdFrm = 0; //当前保存的帧数
+	QString recordPath;
+	cv::VideoWriter vwrt;
+	QFile motionStepsFile;
+	MotionController *motion = nullptr;
+
 	//和进度条有关的一律不能用
 	//bool jump = false; //是否用进度条跳转
 	//float newpos = 0.0f; //进度条跳到的新位置，0~1

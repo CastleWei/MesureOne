@@ -415,6 +415,26 @@ void MeasureOne::on_actModel_triggered()
 	ui.stackedWidget->setCurrentIndex(2);
 }
 
+
+void MeasureOne::on_actRecord_triggered(bool checked)
+{
+	if (checked){
+		QString path = QFileDialog::getSaveFileName();
+		if (!path.isEmpty()){
+			cam->recordPath = path;
+			cam->motion = motion;
+			cam->willRecord = true;
+		}
+		else{
+			vwdb::printstat("not recording");
+			ui.actRecord->setChecked(false);
+		}
+	}
+	else{
+		cam->willRecord = false;
+	}
+}
+
 void MeasureOne::OnMotionConnect(bool checked)
 {
 	if (checked){

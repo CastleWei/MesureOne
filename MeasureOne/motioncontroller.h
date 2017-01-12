@@ -54,6 +54,7 @@ public:
 	bool setSpeed(int speed); //调速，1~100，以50Hz为单位，50~5kHz
 	bool go(Axis axis, Direction dir, int steps = 0);
 	bool stop(Axis axis = AxisAll);
+	int pos(Axis axis){ return axes[axis].pos; }
 
 private:
 	int dt = 2000; //半脉冲间隔时间，微秒

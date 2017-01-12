@@ -324,6 +324,7 @@
    <addaction name="separator"/>
    <addaction name="actTest"/>
    <addaction name="actTry"/>
+   <addaction name="actRecord"/>
    <addaction name="separator"/>
    <addaction name="actLive"/>
    <addaction name="actMeasure"/>

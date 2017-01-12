@@ -55,6 +55,8 @@ private slots:
 	void on_actMeasure_triggered();
 	void on_actModel_triggered();
 
+	void on_actRecord_triggered(bool checked);
+
 	void OnPplBtnClicked(bool checked);
 	void OnCmbIndexChanged(int index);
 

@@ -1,4 +1,5 @@
 #include "cameracontroller.h"
+#include "vwdb.h"
 
 CameraController::CameraController(QObject *parent, ImageProcess &imgProc)
 	: QThread(parent), imgProc(imgProc)
@@ -96,11 +97,51 @@ void CameraController::runVideoCam()
 		//	qDebug() << curpos;
 		//}
 		
+
+		//录像相关		//打开文件
+		if (willRecord && !recording){
+			vwrt.open(recordPath.toStdString(),
+				CV_FOURCC('M', 'P', '4', '2'), 25, src.size());
+			motionStepsFile.setFileName(recordPath + ".motionsteps.txt");
+			motionStepsFile.open(QIODevice::WriteOnly | QIODevice::Text);
+			if (vwrt.isOpened() && motionStepsFile.isOpen() && motion != nullptr) {
+				nRcdFrm = 0;
+				recording = true;
+				//vwdb::printstat("record begin");
+				qDebug() << "record begin";
+			}
+			else{
+				willRecord = false;
+				recording = false;
+				//vwdb::printstat("record fail");
+				qDebug() << "record begin";
+			}
+		}
+		//关闭文件
+		else if (recording && !willRecord){
+			vwrt.release();
+			motionStepsFile.close();
+			recordPath = "";
+			recording = false;
+			//vwdb::printstat("record end");
+			qDebug() << "record begin";
+		}
 		//读取每帧图片并处理
 		{
 			QMutexLocker locker(&imgObj.mutex);
 			if (!cap.read(src)) break;
 			//cvtColor(src, img, COLOR_BGR2GRAY); 在imgProc.process里面做了
+
+			//录像，保存帧
+			if (recording){
+				vwrt << src;
+				int x = motion->pos(X);
+				int y = motion->pos(Y);
+				int z = motion->pos(Z);
+				QTextStream tout(&motionStepsFile);
+				tout << nRcdFrm << '\t' << x << '\t' << y << '\t' << z << endl;
+				nRcdFrm++;
+			}
 		}
 
 		imgProc.process(imgObj);
