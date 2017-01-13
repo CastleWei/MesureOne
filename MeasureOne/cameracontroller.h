@@ -42,6 +42,32 @@ public:
 	cv::VideoWriter vwrt;
 	QFile motionStepsFile;
 	MotionController *motion = nullptr;
+	void startRecorder(){
+		vwrt.open(recordPath.toStdString(),
+			CV_FOURCC('M', 'P', '4', '2'), 25, imgObj.src.size());
+		motionStepsFile.setFileName(recordPath + ".motionsteps.txt");
+		motionStepsFile.open(QIODevice::WriteOnly | QIODevice::Text);
+		if (vwrt.isOpened() && motionStepsFile.isOpen() && motion != nullptr) {
+			nRcdFrm = 0;
+			recording = true;
+			//vwdb::printstat("record begin");
+			qDebug() << "record begin";
+		}
+		else{
+			willRecord = false;
+			recording = false;
+			//vwdb::printstat("record fail");
+			qDebug() << "record begin";
+		}
+	}
+	void stopRecorder(){
+		vwrt.release();
+		motionStepsFile.close();
+		recordPath = "";
+		recording = false;
+		//vwdb::printstat("record end");
+		qDebug() << "record begin";
+	}
 
 	//和进度条有关的一律不能用
 	//bool jump = false; //是否用进度条跳转

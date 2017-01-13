@@ -18,6 +18,9 @@ MeasureOne::MeasureOne(QWidget *parent)
 	
 	ui.lblMeasure->init(&cam->imgObj, &calidata);
 
+	bool connected = motion->connect();
+	ui.actConnectMotion->setChecked(connected);
+
 	//图像来源 单选菜单组
 	grpSrcType = new QActionGroup(this);
 	grpSrcType->addAction(ui.actFromPic);
@@ -30,7 +33,7 @@ MeasureOne::MeasureOne(QWidget *parent)
 	//statusMotion->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	statusMotion->setMinimumWidth(150);
 	statusMotion->setIndent(4);
-	statusMotion->setText(CN("电机未连接"));
+	statusMotion->setText(connected ? CN("电机已连接") : CN("电机未连接"));
 	statusBar()->addPermanentWidget(statusMotion);
 
 	statusCalibration = new QLabel(this);
@@ -162,6 +165,11 @@ void MeasureOne::savePipelins(QComboBox *cmb)
 
 void MeasureOne::timerEvent(QTimerEvent *event)
 {
+	int x = motion->pos(X);
+	int y = motion->pos(Y);
+	int z = motion->pos(Z);
+	statusMotion->setText(QString("(%1, %2, %3)").arg(x).arg(y).arg(z));
+
 	statusFrameIntvl->setText(NUM_STR(cam->dt) + "ms");
 	if (!ui.btnPipeline->isChecked())
 		ui.txtPipeline->setPlainText(imgProc.toString(cam->isRunning()));
@@ -271,6 +279,7 @@ void MeasureOne::finishCollecting()
 	ui.actCapture->setChecked(false);
 	ui.btnPlayPause->setChecked(false);
 	killTimer(tmr);
+	ui.txtPipeline->setPlainText(imgProc.toString(cam->isRunning()));
 }
 
 void MeasureOne::OnTest()
